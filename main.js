@@ -148,6 +148,24 @@ const { pmblockerCommand, readState: readPmBlockerState } = require('./commands/
 const settingsCommand = require('./commands/settings');
 const pairCommand = require('./commands/pair');
 const soraCommand = require('./commands/sora');
+const { channelCommand } = require('./commands/channelTools');
+const { socialDownloadCommand } = require('./commands/socialDownload');
+const {
+    saveCommand,
+    forwardCommand,
+    pinCommand,
+    exifCommand,
+    googleCommand,
+    waifuCommand,
+    imageTransformCommand,
+    visionCommand,
+    tagAdminCommand,
+    securityCommand,
+    economyExtended
+} = require('./commands/extraTools');
+const { statusToolCommand } = require('./commands/statusTools');
+const gifCommand = require('./commands/gif');
+const alternateStickerCommand = require('./commands/sticker-alt');
 
 // Global settings
 global.packname = settings.packname;
@@ -167,6 +185,81 @@ const channelInfo = {
         }
     }
 };
+
+const SOCIAL_DOWNLOAD_COMMANDS = new Set(['twitter', 'threads', 'pinterest', 'mediafire', 'mega']);
+const CHANNEL_COMMANDS = new Set([
+    'channel', 'channels', 'channelinfo', 'channelfollow', 'channelunfollow',
+    'channelmute', 'channelreact', 'channelpost'
+]);
+const STATUS_TOOL_COMMANDS = new Set([
+    'statusdl', 'statussave', 'statusreact', 'statusreply', 'statusmention', 'statusview'
+]);
+
+/**
+ * Dispatch commands supplied by modules that are not part of the legacy switch.
+ * Keeping this in main.js makes the command graph explicit and prevents these
+ * modules from being reachable only through menuCommands' dynamic fallbacks.
+ */
+async function handleIntegratedCommand(sock, chatId, message, rawText, command, args) {
+    if (CHANNEL_COMMANDS.has(command)) {
+        await channelCommand(sock, chatId, message, rawText);
+        return true;
+    }
+    if (SOCIAL_DOWNLOAD_COMMANDS.has(command)) {
+        await socialDownloadCommand(sock, chatId, message);
+        return true;
+    }
+    if (STATUS_TOOL_COMMANDS.has(command)) {
+        await statusToolCommand(sock, chatId, message, rawText);
+        return true;
+    }
+
+    if (['save', 'forward', 'pin', 'unpin', 'exif'].includes(command)) {
+        if (command === 'save') await saveCommand(sock, chatId, message);
+        else if (command === 'forward') await forwardCommand(sock, chatId, message);
+        else if (command === 'pin') await pinCommand(sock, chatId, message);
+        else if (command === 'unpin') await pinCommand(sock, chatId, message, true);
+        else await exifCommand(sock, chatId, message);
+        return true;
+    }
+    if (command === 'google' || command === 'image') {
+        await googleCommand(sock, chatId, message, args, command === 'image');
+        return true;
+    }
+    if (command === 'vision') {
+        await visionCommand(sock, chatId, message);
+        return true;
+    }
+    if (command === 'waifu') {
+        await waifuCommand(sock, chatId, message);
+        return true;
+    }
+    if (command === 'colorize' || command === 'animefy') {
+        await imageTransformCommand(sock, chatId, message, command);
+        return true;
+    }
+    if (command === 'tagadmin') {
+        await tagAdminCommand(sock, chatId, message);
+        return true;
+    }
+    if (['profile', 'level', 'rank', 'leaderboard', 'daily', 'balance', 'give'].includes(command)) {
+        await economyExtended(sock, chatId, message, command, args);
+        return true;
+    }
+    if (['antispam', 'antiflood', 'antibot'].includes(command)) {
+        await securityCommand(sock, chatId, message, command, args.split(/\s+/)[0]);
+        return true;
+    }
+    if (command === 'gif') {
+        await gifCommand(sock, chatId, args);
+        return true;
+    }
+    if (['sticker-alt', 'stickeralt', 'sticker2'].includes(command)) {
+        await alternateStickerCommand(sock, chatId, message);
+        return true;
+    }
+    return false;
+}
 
 async function handleMessages(sock, messageUpdate, printLog) {
     let chatId = null;
@@ -378,6 +471,15 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await sock.sendMessage(chatId, { text: '❌ This command is only available for the owner or sudo!' }, { quoted: message });
                 return;
             }
+        }
+
+        const command = userMessage.split(/\s+/)[0].slice(1);
+        const commandArgs = rawText.trim().split(/\s+/).slice(1).join(' ');
+
+        // Handle explicitly integrated modules before menu fallbacks and legacy cases.
+        if (await handleIntegratedCommand(sock, chatId, message, rawText, command, commandArgs)) {
+            await addCommandReaction(sock, message);
+            return;
         }
 
         // Handle menu commands with dedicated implementations before legacy cases.

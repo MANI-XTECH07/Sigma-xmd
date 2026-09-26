@@ -3,47 +3,615 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090b12" />
-  <title>SIGMA XMD · Pairing & QR</title>
+  <meta name="theme-color" content="#070a13" />
+  <meta name="description" content="SIGMA XMD WhatsApp pairing code and QR authentication portal." />
+  <title>SIGMA XMD · WhatsApp Authentication</title>
   <style>
-    :root { color-scheme: dark; --bg:#090b12; --panel:#111622; --ink:#f8fafc; --muted:#9da8bb; --line:#283244; --accent:#6ee7b7; --accent-2:#60a5fa; --danger:#fca5a5; }
-    * { box-sizing:border-box; } body { margin:0; min-height:100vh; color:var(--ink); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; background:radial-gradient(circle at 80% 15%,#173a43 0,transparent 32%),radial-gradient(circle at 10% 90%,#17264a 0,transparent 30%),var(--bg); } a { color:inherit; }
-    .shell { width:min(1080px,calc(100% - 40px)); margin:auto; padding:28px 0 52px; } nav { display:flex; justify-content:space-between; align-items:center; gap:24px; } .brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; } .mark { display:grid; place-items:center; width:38px; height:38px; border:1px solid rgba(110,231,183,.5); border-radius:12px; color:var(--accent); background:rgba(110,231,183,.1); } nav a { color:var(--muted); text-decoration:none; font-size:14px; }
-    main { display:grid; grid-template-columns:1.05fr .95fr; gap:72px; align-items:center; padding:84px 0 66px; } .eyebrow { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:8px 12px; color:var(--muted); font-size:12px; letter-spacing:.1em; text-transform:uppercase; background:rgba(17,22,34,.7); } .dot { width:7px; height:7px; border-radius:99px; background:var(--accent); box-shadow:0 0 12px var(--accent); }
-    h1 { max-width:650px; margin:22px 0 18px; font-size:clamp(42px,6vw,74px); line-height:.98; letter-spacing:-.07em; } h1 span { color:var(--accent); } .lede { max-width:580px; color:var(--muted); font-size:18px; line-height:1.65; } .steps { display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; color:var(--muted); font-size:13px; } .step { display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:rgba(17,22,34,.55); } .step b { color:var(--ink); }
-    .card { padding:26px; border:1px solid rgba(148,163,184,.22); border-radius:24px; background:linear-gradient(150deg,rgba(23,29,43,.95),rgba(12,16,26,.94)); box-shadow:0 24px 80px rgba(0,0,0,.35); } .card h2 { margin:0 0 8px; font-size:24px; letter-spacing:-.03em; } .card-intro { margin:0 0 20px; color:var(--muted); line-height:1.55; font-size:14px; }
-    .tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; padding:5px; border:1px solid var(--line); border-radius:13px; background:#0c1019; } .tab { border:0; border-radius:9px; padding:11px 8px; cursor:pointer; color:var(--muted); background:transparent; font:inherit; font-size:13px; font-weight:750; } .tab.active { color:#06120f; background:var(--accent); } .panel { display:none; } .panel.active { display:block; }
-    label { display:block; margin:0 0 8px; color:#d9e1ed; font-size:13px; font-weight:650; } input { width:100%; border:1px solid var(--line); border-radius:12px; padding:15px 14px; outline:none; color:var(--ink); background:#0c1019; font:inherit; } input:focus { border-color:var(--accent-2); box-shadow:0 0 0 4px rgba(96,165,250,.13); } .hint { margin-top:8px; color:var(--muted); font-size:12px; }
-    button.action { width:100%; margin-top:20px; border:0; border-radius:12px; padding:15px 18px; cursor:pointer; color:#06120f; background:var(--accent); font:inherit; font-weight:800; transition:transform .16s,filter .16s; } button.action:hover { filter:brightness(1.06); } button.action:active { transform:scale(.98); } button:disabled { cursor:wait; opacity:.65; }
-    .result { display:none; margin-top:18px; padding:18px; border:1px solid rgba(110,231,183,.35); border-radius:14px; background:rgba(110,231,183,.08); } .result.show { display:block; } .result.error { border-color:rgba(252,165,165,.35); background:rgba(252,165,165,.08); } .result-label { color:var(--muted); font-size:12px; } .code { margin-top:6px; color:var(--accent); font-size:30px; font-weight:850; letter-spacing:.16em; } .result-copy { margin-top:10px; color:#d5deeb; font-size:13px; line-height:1.5; }
-    .qr-box { display:grid; place-items:center; min-height:250px; border:1px dashed var(--line); border-radius:14px; background:#fff; } .qr-box img { display:none; max-width:100%; width:250px; height:250px; } .qr-box img.show { display:block; } .qr-message { padding:24px; color:#5d687b; text-align:center; font-size:13px; line-height:1.5; } .qr-message.hidden { display:none; } .status { margin-top:12px; color:var(--muted); font-size:12px; text-align:center; }
-    footer { display:flex; justify-content:space-between; gap:20px; padding-top:24px; border-top:1px solid rgba(148,163,184,.14); color:var(--muted); font-size:12px; } @media(max-width:800px) { .shell { width:min(100% - 28px,620px); } main { grid-template-columns:1fr; gap:36px; padding:64px 0 48px; } h1 { font-size:clamp(42px,14vw,66px); } .lede { font-size:16px; } footer { flex-direction:column; } }
+    :root {
+      color-scheme: dark;
+      --bg: #070a13;
+      --bg-deep: #04060c;
+      --panel: rgba(13, 18, 32, .74);
+      --panel-strong: rgba(16, 22, 40, .93);
+      --panel-soft: rgba(255, 255, 255, .035);
+      --ink: #f5f7ff;
+      --muted: #9ca8c1;
+      --faint: #64708a;
+      --line: rgba(148, 163, 184, .18);
+      --line-bright: rgba(148, 163, 184, .34);
+      --green: #a7ffcf;
+      --green-strong: #4ce39a;
+      --cyan: #69e9ff;
+      --violet: #a58bff;
+      --danger: #ff8eaa;
+      --warning: #ffd27d;
+      --shadow: 0 26px 100px rgba(0, 0, 0, .42);
+      --radius: 24px;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(75, 227, 154, .11), transparent 26rem),
+        radial-gradient(circle at 91% 14%, rgba(105, 233, 255, .1), transparent 30rem),
+        radial-gradient(circle at 52% 72%, rgba(165, 139, 255, .08), transparent 34rem),
+        var(--bg);
+    }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      content: "";
+      pointer-events: none;
+      opacity: .28;
+      background-image: linear-gradient(rgba(146, 170, 203, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(146, 170, 203, .055) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: linear-gradient(to bottom, #000, transparent 85%);
+    }
+    body::after {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      pointer-events: none;
+      opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .section { padding: 110px 0; position: relative; }
+    .section-kicker { display: flex; align-items: center; gap: 10px; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    .section-kicker::before { width: 28px; height: 1px; content: ""; background: linear-gradient(90deg, var(--green), transparent); }
+    .section-heading { max-width: 720px; margin: 16px 0 0; font-size: clamp(32px, 5vw, 62px); line-height: .98; letter-spacing: -.065em; }
+    .section-copy { max-width: 620px; margin: 20px 0 0; color: var(--muted); line-height: 1.75; font-size: 16px; }
+    .glass { border: 1px solid var(--line); background: linear-gradient(145deg, rgba(22, 30, 52, .8), rgba(8, 12, 23, .72)); box-shadow: var(--shadow); backdrop-filter: blur(22px); }
+
+    /* Navigation */
+    .site-nav { position: fixed; top: 18px; left: 0; right: 0; z-index: 20; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 66px; padding: 10px 14px 10px 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(7, 10, 19, .72); box-shadow: 0 14px 50px rgba(0, 0, 0, .28); backdrop-filter: blur(22px); }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-size: 13px; font-weight: 900; letter-spacing: .16em; }
+    .brand-mark { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid rgba(167, 255, 207, .65); border-radius: 13px; color: var(--green); font-size: 24px; box-shadow: inset 0 0 22px rgba(76, 227, 154, .1), 0 0 24px rgba(76, 227, 154, .12); }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-links a { padding: 11px 12px; color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 800; letter-spacing: .12em; transition: color .2s, background .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); background: var(--panel-soft); border-radius: 10px; }
+    .system-pill { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid rgba(76, 227, 154, .24); border-radius: 999px; color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .1em; white-space: nowrap; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-strong); box-shadow: 0 0 12px var(--green-strong); }
+    .menu-toggle { display: none; border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: transparent; cursor: pointer; }
+    .menu-toggle span { display: block; width: 18px; height: 2px; margin: 4px; background: var(--ink); }
+
+    /* Hero */
+    .hero { min-height: 790px; display: grid; align-items: center; padding-top: 150px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(360px, .98fr); align-items: center; gap: 68px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 9px 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(11, 16, 29, .68); font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .eyebrow .status-dot { width: 6px; height: 6px; }
+    .hero h1 { max-width: 780px; margin: 24px 0 20px; font-size: clamp(50px, 8vw, 104px); line-height: .89; letter-spacing: -.085em; }
+    .gradient-text { color: var(--green); background: linear-gradient(105deg, var(--green), var(--cyan) 48%, var(--violet)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-copy { max-width: 620px; color: var(--muted); font-size: 18px; line-height: 1.7; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 19px; border: 1px solid transparent; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; transition: transform .2s, box-shadow .2s, border-color .2s, background .2s, opacity .2s; overflow: hidden; }
+    .btn::after { position: absolute; inset: 0; content: ""; background: linear-gradient(115deg, transparent 20%, rgba(255,255,255,.15), transparent 80%); transform: translateX(-120%); transition: transform .5s; }
+    .btn:hover::after { transform: translateX(120%); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(1px) scale(.98); }
+    .btn-primary { color: #05110d; background: linear-gradient(110deg, var(--green), #7fffea); box-shadow: 0 0 32px rgba(76, 227, 154, .2); }
+    .btn-primary:hover { box-shadow: 0 0 42px rgba(76, 227, 154, .4); }
+    .btn-secondary { border-color: var(--line-bright); background: rgba(255,255,255,.035); color: var(--ink); }
+    .btn-secondary:hover { border-color: rgba(105, 233, 255, .5); background: rgba(105, 233, 255, .07); }
+    .btn:disabled { cursor: wait; opacity: .62; transform: none; }
+    .hero-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 650px; margin-top: 44px; }
+    .metric { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: rgba(13, 18, 32, .58); }
+    .metric-label { color: var(--faint); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .metric-value { display: flex; align-items: center; gap: 7px; margin-top: 9px; color: var(--ink); font-size: 12px; font-weight: 850; }
+    .metric-value .status-dot { width: 6px; height: 6px; }
+
+    .holo-stage { position: relative; display: grid; place-items: center; min-height: 500px; }
+    .holo-stage::before, .holo-stage::after { position: absolute; content: ""; border: 1px solid rgba(105, 233, 255, .14); border-radius: 50%; transform: rotate(-25deg); }
+    .holo-stage::before { width: 440px; height: 150px; box-shadow: 0 0 35px rgba(105,233,255,.1); }
+    .holo-stage::after { width: 350px; height: 110px; transform: rotate(31deg); border-color: rgba(165, 139, 255, .16); }
+    .orb { position: relative; display: grid; place-items: center; width: min(360px, 70vw); aspect-ratio: 1; border: 1px solid rgba(167, 255, 207, .44); border-radius: 50%; background: radial-gradient(circle at 35% 28%, rgba(167,255,207,.22), transparent 30%), radial-gradient(circle, rgba(76,227,154,.12), rgba(9,13,24,.12) 54%, transparent 70%); box-shadow: inset 0 0 70px rgba(76,227,154,.12), 0 0 90px rgba(76,227,154,.12); animation: float 7s ease-in-out infinite; }
+    .orb::before, .orb::after { position: absolute; content: ""; border-radius: 50%; border: 1px solid rgba(105, 233, 255, .46); }
+    .orb::before { inset: 22px; border-style: dashed; animation: spin 18s linear infinite; }
+    .orb::after { inset: -18px; border-color: rgba(165,139,255,.24); transform: rotate(60deg) scaleY(.28); box-shadow: 0 0 28px rgba(165,139,255,.15); }
+    .sigma { color: var(--green); font-size: 124px; font-weight: 900; line-height: 1; text-shadow: 0 0 22px rgba(167,255,207,.65), 0 0 70px rgba(76,227,154,.35); }
+    .orbit-dot { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
+    .orbit-dot.one { top: 18%; right: 18%; }
+    .orbit-dot.two { bottom: 22%; left: 13%; background: var(--violet); box-shadow: 0 0 20px var(--violet); }
+    .float-card { position: absolute; display: flex; align-items: center; gap: 8px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 13px; background: rgba(10, 15, 28, .78); box-shadow: 0 15px 35px rgba(0,0,0,.25); backdrop-filter: blur(15px); color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+    .float-card b { color: var(--ink); }
+    .float-card.a { top: 11%; right: 2%; }
+    .float-card.b { bottom: 19%; left: 0; }
+    .float-card.c { right: 9%; bottom: 9%; }
+
+    /* Shared cards and forms */
+    .mode-grid, .status-grid, .security-grid, .feature-grid, .how-grid { display: grid; gap: 16px; }
+    .mode-grid { grid-template-columns: repeat(2, 1fr); margin-top: 42px; }
+    .mode-card, .info-card, .feature-card, .timeline-card, .how-card { position: relative; padding: 26px; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, rgba(20, 28, 48, .72), rgba(8, 12, 23, .68)); box-shadow: 0 18px 70px rgba(0,0,0,.2); transition: transform .25s, border-color .25s, background .25s; }
+    .mode-card:hover, .info-card:hover, .feature-card:hover, .how-card:hover { transform: translateY(-5px); border-color: rgba(105, 233, 255, .34); background: linear-gradient(145deg, rgba(24, 37, 62, .82), rgba(8, 12, 23, .72)); }
+    .mode-card.active { border-color: rgba(167,255,207,.52); box-shadow: 0 0 38px rgba(76,227,154,.1); }
+    .card-index { color: var(--green); font-size: 11px; font-weight: 900; letter-spacing: .18em; }
+    .mode-card h3, .info-card h3, .feature-card h3, .how-card h3 { margin: 17px 0 9px; font-size: 21px; letter-spacing: -.04em; }
+    .mode-card p, .info-card p, .feature-card p, .how-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .mode-icon { display: grid; place-items: center; width: 54px; height: 54px; border: 1px solid rgba(105,233,255,.25); border-radius: 17px; color: var(--cyan); font-size: 24px; background: rgba(105,233,255,.06); }
+    .auth-layout { display: grid; grid-template-columns: minmax(0, .84fr) minmax(0, 1.16fr); gap: 18px; margin-top: 42px; align-items: start; }
+    .auth-panel { padding: 30px; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, rgba(20, 28, 48, .8), rgba(8, 12, 23, .72)); box-shadow: var(--shadow); }
+    .auth-panel h3 { margin: 0; font-size: 27px; letter-spacing: -.05em; }
+    .auth-panel > p { margin: 9px 0 25px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .form-label { display: block; margin-bottom: 8px; color: #dce4f3; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .input-wrap { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 13px; padding: 0 14px; background: rgba(4, 7, 15, .7); transition: border-color .2s, box-shadow .2s; }
+    .input-wrap:focus-within { border-color: rgba(105,233,255,.64); box-shadow: 0 0 0 4px rgba(105,233,255,.1); }
+    .input-prefix { color: var(--green); font-size: 13px; font-weight: 800; }
+    input { width: 100%; min-height: 53px; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 16px; letter-spacing: .06em; }
+    input::placeholder { color: #4f5b74; }
+    .form-hint { margin-top: 9px; color: var(--faint); font-size: 11px; line-height: 1.5; }
+    .wide { width: 100%; margin-top: 20px; }
+    .inline-error { min-height: 20px; margin-top: 13px; color: var(--danger); font-size: 12px; }
+    .terminal { min-height: 260px; margin-top: 20px; padding: 19px; border: 1px solid rgba(105,233,255,.18); border-radius: 17px; background: rgba(2, 6, 14, .7); }
+    .terminal-head { display: flex; align-items: center; justify-content: space-between; color: var(--faint); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .terminal-dots { display: flex; gap: 5px; }
+    .terminal-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+    .terminal-line { display: flex; gap: 10px; margin-top: 27px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 2; }
+    .terminal-line b { color: var(--green); }
+    .terminal-line.current { color: var(--ink); }
+    .code-display { display: none; margin-top: 20px; padding: 22px; border: 1px solid rgba(167,255,207,.42); border-radius: 17px; text-align: center; background: linear-gradient(145deg, rgba(76,227,154,.1), rgba(105,233,255,.04)); box-shadow: 0 0 34px rgba(76,227,154,.1); }
+    .code-display.show { display: block; animation: reveal .55s ease both; }
+    .code-label { color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+    .pair-code { margin: 12px 0 18px; color: var(--green); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(27px, 5vw, 42px); font-weight: 900; letter-spacing: .17em; text-shadow: 0 0 20px rgba(167,255,207,.42); }
+    .copy-row { display: flex; gap: 8px; justify-content: center; }
+    .copy-button { min-width: 150px; }
+    .copy-button.copied { color: #04130c; background: var(--green); }
+    .copy-button.error { color: var(--ink); border-color: rgba(255,142,170,.45); background: rgba(255,142,170,.1); }
+
+    /* QR */
+    .qr-panel { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(0, 1.2fr); gap: 28px; align-items: center; }
+    .qr-frame { position: relative; display: grid; place-items: center; min-height: 290px; overflow: hidden; border: 1px solid rgba(105,233,255,.3); border-radius: 21px; background: #fff; box-shadow: 0 0 48px rgba(105,233,255,.1); }
+    .qr-frame::after { position: absolute; left: 6%; right: 6%; top: 15%; height: 2px; content: ""; background: var(--cyan); box-shadow: 0 0 14px 4px rgba(105,233,255,.6); animation: scan 3.2s ease-in-out infinite; }
+    .qr-frame img { display: none; width: min(270px, 88%); height: auto; aspect-ratio: 1; }
+    .qr-frame img.show { display: block; }
+    .qr-placeholder { padding: 24px; color: #66738e; text-align: center; font-size: 12px; line-height: 1.6; }
+    .qr-placeholder.hidden { display: none; }
+    .qr-meta { color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .qr-meta strong { color: var(--ink); }
+    .qr-list { display: grid; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; color: var(--muted); font-size: 12px; }
+    .qr-list li { display: flex; gap: 10px; }
+    .qr-list b { color: var(--cyan); font-family: ui-monospace, monospace; }
+    .qr-status { display: flex; align-items: center; gap: 8px; margin-top: 15px; color: var(--muted); font-size: 11px; }
+
+    /* Live status and timeline */
+    .status-grid { grid-template-columns: 1.2fr .8fr; margin-top: 42px; }
+    .status-visual { min-height: 370px; display: grid; place-items: center; text-align: center; }
+    .status-ring { display: grid; place-items: center; width: 220px; height: 220px; border: 1px solid rgba(167,255,207,.45); border-radius: 50%; box-shadow: 0 0 0 17px rgba(76,227,154,.025), 0 0 0 34px rgba(105,233,255,.025), 0 0 55px rgba(76,227,154,.15); }
+    .status-ring-inner { display: grid; place-items: center; width: 146px; height: 146px; border: 1px dashed rgba(105,233,255,.5); border-radius: 50%; animation: spin 14s linear infinite; }
+    .status-ring-content { position: absolute; display: grid; gap: 6px; }
+    .status-ring-content strong { font-size: 24px; letter-spacing: -.06em; }
+    .status-ring-content span { color: var(--green); font-size: 10px; font-weight: 900; letter-spacing: .16em; }
+    .status-caption { margin-top: 25px; color: var(--muted); font-size: 13px; }
+    .state-list { display: grid; gap: 12px; padding: 23px; }
+    .state-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+    .state-row:last-child { padding-bottom: 0; border-bottom: 0; }
+    .state-badge { padding: 5px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--faint); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
+    .state-badge.live { color: var(--green); border-color: rgba(76,227,154,.35); background: rgba(76,227,154,.08); }
+    .timeline-card { margin-top: 16px; }
+    .timeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 25px; }
+    .timeline-step { position: relative; padding-right: 15px; }
+    .timeline-step:not(:last-child)::after { position: absolute; top: 16px; left: 36px; right: 12px; height: 1px; content: ""; background: var(--line); }
+    .timeline-step.active:not(:last-child)::after { background: linear-gradient(90deg, var(--green), var(--line)); }
+    .timeline-number { position: relative; z-index: 1; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--line-bright); border-radius: 50%; color: var(--faint); background: var(--panel-strong); font: 900 10px ui-monospace, monospace; }
+    .timeline-step.active .timeline-number { border-color: var(--green); color: var(--bg); background: var(--green); box-shadow: 0 0 20px rgba(76,227,154,.25); }
+    .timeline-step b { display: block; margin-top: 12px; color: var(--muted); font-size: 11px; letter-spacing: .05em; }
+    .timeline-step.active b { color: var(--ink); }
+
+    /* Sections */
+    .how-grid { grid-template-columns: repeat(3, 1fr); margin-top: 42px; }
+    .how-card { min-height: 190px; }
+    .how-card::after { position: absolute; top: 50%; right: -27px; content: "→"; color: var(--faint); font-size: 24px; }
+    .how-card:last-child::after { display: none; }
+    .security-grid { grid-template-columns: repeat(4, 1fr); margin-top: 42px; }
+    .info-card { min-height: 170px; }
+    .info-icon { color: var(--cyan); font-size: 24px; }
+    .feature-grid { grid-template-columns: repeat(3, 1fr); margin-top: 42px; }
+    .feature-card { min-height: 190px; }
+    .feature-card h3 { font-size: 18px; }
+    .feature-card p { font-size: 13px; }
+    .faq-list { max-width: 880px; margin-top: 42px; border-top: 1px solid var(--line); }
+    .faq-item { border-bottom: 1px solid var(--line); }
+    .faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 23px 0; cursor: pointer; list-style: none; font-size: 15px; font-weight: 800; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: "+"; color: var(--green); font: 300 26px/1 monospace; transition: transform .25s; }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-answer { max-width: 700px; padding: 0 45px 24px 0; color: var(--muted); line-height: 1.7; font-size: 13px; }
+
+    /* Toast/footer/canvas */
+    #particles { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; opacity: .65; }
+    .toast-region { position: fixed; right: 20px; bottom: 20px; z-index: 50; display: grid; gap: 10px; width: min(360px, calc(100% - 40px)); }
+    .toast { display: flex; align-items: flex-start; gap: 10px; padding: 14px 15px; border: 1px solid var(--line); border-radius: 13px; color: var(--ink); background: rgba(13,18,32,.93); box-shadow: 0 18px 50px rgba(0,0,0,.35); backdrop-filter: blur(18px); animation: toast-in .3s ease both; font-size: 12px; line-height: 1.45; }
+    .toast.success { border-color: rgba(76,227,154,.4); }
+    .toast.error { border-color: rgba(255,142,170,.4); }
+    .toast.warning { border-color: rgba(255,210,125,.4); }
+    .toast-icon { color: var(--green); font-size: 16px; }
+    .toast.error .toast-icon { color: var(--danger); }
+    .toast.warning .toast-icon { color: var(--warning); }
+    footer { padding: 75px 0 30px; border-top: 1px solid var(--line); }
+    .footer-grid { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; }
+    .footer-brand { font-size: 22px; font-weight: 900; letter-spacing: .15em; }
+    .footer-brand small { display: block; margin-top: 12px; color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: .08em; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 17px; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+    .footer-links a { text-decoration: none; }
+    .footer-links a:hover { color: var(--green); }
+    .copyright { margin-top: 48px; color: var(--faint); font-size: 11px; }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .loader { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(4,17,13,.32); border-top-color: #04110d; border-radius: 50%; animation: spin .7s linear infinite; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-11px); } }
+    @keyframes scan { 0%, 100% { transform: translateY(-115px); opacity: 0; } 20%, 75% { opacity: 1; } 50% { transform: translateY(115px); } }
+    @keyframes reveal { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes toast-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @media (max-width: 980px) {
+      .hero-grid, .auth-layout, .status-grid { grid-template-columns: 1fr; }
+      .holo-stage { min-height: 390px; order: -1; }
+      .hero { min-height: auto; padding-bottom: 55px; }
+      .security-grid { grid-template-columns: repeat(2, 1fr); }
+      .qr-panel { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .container { width: min(100% - 28px, 620px); }
+      .site-nav { top: 10px; }
+      .nav-inner { min-height: 58px; }
+      .nav-links { position: absolute; top: 68px; left: 0; right: 0; display: none; flex-direction: column; align-items: stretch; padding: 10px; border: 1px solid var(--line); border-radius: 15px; background: rgba(7,10,19,.96); box-shadow: var(--shadow); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 14px; }
+      .system-pill { display: none; }
+      .menu-toggle { display: block; }
+      .hero { padding-top: 115px; }
+      .hero h1 { font-size: clamp(48px, 15vw, 78px); }
+      .hero-copy { font-size: 16px; }
+      .hero-actions .btn { width: 100%; }
+      .hero-metrics { grid-template-columns: 1fr; }
+      .holo-stage { min-height: 330px; transform: scale(.86); margin: -25px 0; }
+      .float-card { font-size: 9px; }
+      .float-card.a { right: 0; }
+      .mode-grid, .how-grid, .feature-grid { grid-template-columns: 1fr; }
+      .how-card::after { top: auto; right: auto; bottom: -25px; left: 50%; content: "↓"; }
+      .how-card { margin-bottom: 18px; }
+      .how-card:last-child { margin-bottom: 0; }
+      .security-grid { grid-template-columns: 1fr; }
+      .timeline { grid-template-columns: 1fr; gap: 14px; }
+      .timeline-step { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 12px; padding: 0; }
+      .timeline-step:not(:last-child)::after { top: 34px; left: 16px; right: auto; width: 1px; height: 20px; }
+      .timeline-step b { margin: 0; }
+      .footer-grid { align-items: flex-start; flex-direction: column; }
+      .section { padding: 82px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <nav><div class="brand"><div class="mark">Σ</div><span>SIGMA XMD</span></div><a href="https://github.com/MANI-XTECH07/Sigma-xmd" target="_blank" rel="noreferrer">Source on GitHub</a></nav>
-    <main>
-      <section><div class="eyebrow"><span class="dot"></span> authentication only</div><h1>Connect SIGMA with <span>WhatsApp.</span></h1><p class="lede">Choose the authentication method that works for you. This portal is intentionally limited to pairing-code and QR login—no bot dashboard, settings, or message controls.</p><div class="steps"><div class="step"><b>01</b> Choose a method</div><div class="step"><b>02</b> Authenticate</div><div class="step"><b>03</b> Start SIGMA</div></div></section>
-      <section class="card" aria-labelledby="auth-title"><h2 id="auth-title">WhatsApp authentication</h2><p class="card-intro">Use a phone number you own or are authorized to connect. Never share a pairing code or session credentials.</p>
-        <div class="tabs" role="tablist"><button class="tab active" data-tab="pair" role="tab" aria-selected="true">Pairing code</button><button class="tab" data-tab="qr" role="tab" aria-selected="false">QR code</button></div>
-        <div id="pair-panel" class="panel active"><form id="pair-form"><label for="phone">WhatsApp phone number</label><input id="phone" name="phone" inputmode="numeric" autocomplete="tel" placeholder="15551234567" minlength="6" maxlength="15" required /><div class="hint">Full international number, digits only. Example: 15551234567.</div><button class="action" id="pair-submit" type="submit">Generate pairing code</button></form><div id="pair-result" class="result" role="status" aria-live="polite"></div></div>
-        <div id="qr-panel" class="panel"><div class="qr-box"><img id="qr-image" alt="WhatsApp login QR code" /><div id="qr-message" class="qr-message">Waiting for the bot to generate a QR code…<br />Keep this page open while SIGMA connects.</div></div><div id="qr-status" class="status">Checking QR status…</div><button class="action" id="qr-refresh" type="button">Refresh QR</button></div>
-      </section>
-    </main>
-    <footer><span>Pairing and QR authentication only.</span><span>SIGMA XMD · Use responsibly</span></footer>
-  </div>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <header class="site-nav">
+    <div class="container">
+      <nav class="nav-inner" aria-label="Primary navigation">
+        <a class="brand" href="#home" aria-label="SIGMA XMD home"><span class="brand-mark">Σ</span><span>SIGMA XMD</span></a>
+        <div class="nav-links" id="nav-links">
+          <a href="#home" class="active">HOME</a><a href="#pair">PAIR</a><a href="#status">STATUS</a><a href="#features">FEATURES</a><a href="#faq">FAQ</a>
+        </div>
+        <div class="system-pill"><span class="status-dot"></span><span id="nav-system">SYSTEM CHECKING</span></div>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow"><span class="status-dot"></span> Secure WhatsApp authentication</div>
+          <h1>CONNECT SIGMA<br /><span class="gradient-text">WITH WHATSAPP</span></h1>
+          <p class="hero-copy">Securely connect your WhatsApp account to SIGMA XMD using a real pairing code or QR authentication flow. No credentials are displayed in this portal.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="#pair">CONNECT WHATSAPP <span>↗</span></a><a class="btn btn-secondary" href="#features">EXPLORE FEATURES <span>↓</span></a></div>
+          <div class="hero-metrics" aria-label="Live service indicators">
+            <div class="metric"><div class="metric-label">Server</div><div class="metric-value"><span class="status-dot" id="metric-server-dot"></span><span id="metric-server">CHECKING</span></div></div>
+            <div class="metric"><div class="metric-label">Auth layer</div><div class="metric-value"><span class="status-dot" id="metric-auth-dot"></span><span id="metric-auth">WAITING</span></div></div>
+            <div class="metric"><div class="metric-label">QR service</div><div class="metric-value"><span class="status-dot" id="metric-qr-dot"></span><span id="metric-qr">STANDBY</span></div></div>
+          </div>
+        </div>
+        <div class="holo-stage" aria-hidden="true">
+          <div class="orb"><span class="sigma">Σ</span><span class="orbit-dot one"></span><span class="orbit-dot two"></span></div>
+          <div class="float-card a"><span class="status-dot"></span><b>SERVER</b> <span id="hero-server">ONLINE</span></div>
+          <div class="float-card b"><span class="status-dot"></span><b>AUTH</b> <span id="hero-auth">READY</span></div>
+          <div class="float-card c"><span class="status-dot"></span><b>QR</b> <span id="hero-qr">STANDBY</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pair">
+      <div class="container">
+        <div class="section-kicker">01 / Authentication terminal</div>
+        <h2 class="section-heading">Choose your connection method.</h2>
+        <p class="section-copy">The portal uses the existing SIGMA XMD authentication service. Select pairing code for phone-number authentication or QR code for WhatsApp linked-device scanning.</p>
+        <div class="mode-grid">
+          <button class="mode-card active" type="button" data-mode="pair" aria-pressed="true"><span class="mode-icon">⌁</span><span class="card-index">MODE 01</span><h3>Pairing code</h3><p>Connect using your full international WhatsApp phone number.</p></button>
+          <button class="mode-card" type="button" data-mode="qr" aria-pressed="false"><span class="mode-icon">▦</span><span class="card-index">MODE 02</span><h3>QR authentication</h3><p>Scan the live QR code using WhatsApp Linked Devices.</p></button>
+        </div>
+        <div class="auth-layout">
+          <section class="auth-panel" id="pair-panel" aria-labelledby="pair-title">
+            <div class="card-index">01 / PHONE NUMBER</div>
+            <h3 id="pair-title">Generate pairing code</h3>
+            <p>Enter a number you own or are authorized to connect. Use country code and digits only.</p>
+            <form id="pair-form" novalidate>
+              <label class="form-label" for="phone">WhatsApp phone number</label>
+              <div class="input-wrap"><span class="input-prefix">+</span><input id="phone" name="phone" inputmode="numeric" autocomplete="tel" placeholder="15551234567" minlength="6" maxlength="15" required /></div>
+              <div class="form-hint">Example: 15551234567 · 6–15 digits including country code.</div>
+              <div class="inline-error" id="pair-error" role="alert"></div>
+              <button class="btn btn-primary wide" id="pair-submit" type="submit">GENERATE PAIRING CODE <span>→</span></button>
+            </form>
+            <div class="terminal" aria-live="polite">
+              <div class="terminal-head"><span>AUTHENTICATION TERMINAL</span><span class="terminal-dots"><span></span><span></span><span></span></span></div>
+              <div class="terminal-line"><b>›</b><span id="terminal-line">Waiting for an authentication request.</span></div>
+              <div class="terminal-line current"><b>›</b><span id="terminal-status">System ready.</span></div>
+            </div>
+            <div class="code-display" id="code-display" aria-live="polite">
+              <div class="code-label">Your pairing code</div>
+              <div class="pair-code" id="pair-code">—</div>
+              <div class="copy-row"><button class="btn btn-primary copy-button" id="copy-code" type="button" aria-label="Copy pairing code">⧉ COPY CODE</button></div>
+              <div class="form-hint">Enter this code in WhatsApp → Settings → Linked devices → Link with phone number instead.</div>
+            </div>
+          </section>
+
+          <section class="auth-panel" id="qr-panel" aria-labelledby="qr-title">
+            <div class="card-index">02 / LINKED DEVICES</div>
+            <h3 id="qr-title">QR authentication</h3>
+            <p>Scan the real QR generated by the connected SIGMA XMD backend. Keep this page open while the connection is waiting.</p>
+            <div class="qr-panel">
+              <div class="qr-frame"><img id="qr-image" alt="Live WhatsApp authentication QR code" /><div class="qr-placeholder" id="qr-placeholder">Waiting for the backend to generate a QR code.<br />The image will appear here when available.</div></div>
+              <div>
+                <div class="qr-meta"><strong id="qr-state">WAITING</strong><br /><span id="qr-updated">No QR update received yet.</span></div>
+                <ol class="qr-list"><li><b>01</b> Open WhatsApp</li><li><b>02</b> Open Settings → Linked Devices</li><li><b>03</b> Select Link a Device</li><li><b>04</b> Scan this QR code</li></ol>
+                <div class="qr-status"><span class="status-dot" id="qr-live-dot"></span><span id="qr-live-status">Checking QR service…</span></div>
+                <button class="btn btn-secondary wide" id="qr-refresh" type="button">↻ REFRESH QR</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="status">
+      <div class="container">
+        <div class="section-kicker">02 / Live connection status</div>
+        <h2 class="section-heading">See the real connection state.</h2>
+        <p class="section-copy">Status indicators are driven by the existing backend response. The interface never reports connected until the server confirms a paired session.</p>
+        <div class="status-grid">
+          <div class="status-visual glass"><div class="status-ring"><div class="status-ring-inner"></div><div class="status-ring-content"><strong id="connection-state">WAITING</strong><span>CONNECTION</span></div></div><div class="status-caption" id="connection-detail">Waiting for the WhatsApp authentication service.</div></div>
+          <div class="glass state-list" aria-label="Connection details">
+            <div class="state-row"><span>Service</span><span class="state-badge" id="state-service">CHECKING</span></div>
+            <div class="state-row"><span>WhatsApp socket</span><span class="state-badge" id="state-socket">WAITING</span></div>
+            <div class="state-row"><span>Session</span><span class="state-badge" id="state-session">UNPAIRED</span></div>
+            <div class="state-row"><span>QR availability</span><span class="state-badge" id="state-qr">STANDBY</span></div>
+            <div class="state-row"><span>Last check</span><span class="state-badge" id="state-time">—</span></div>
+          </div>
+        </div>
+        <div class="timeline-card glass"><div class="card-index">CONNECTION TIMELINE</div><div class="timeline" id="timeline"><div class="timeline-step active"><div class="timeline-number">01</div><b>PHONE NUMBER</b></div><div class="timeline-step"><div class="timeline-number">02</div><b>REQUEST CODE</b></div><div class="timeline-step"><div class="timeline-number">03</div><b>AUTHENTICATE</b></div><div class="timeline-step"><div class="timeline-number">04</div><b>WHATSAPP CONNECTED</b></div><div class="timeline-step"><div class="timeline-number">05</div><b>SIGMA READY</b></div></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="container"><div class="section-kicker">03 / How it works</div><h2 class="section-heading">A clear path from phone to ready.</h2><div class="how-grid"><article class="how-card"><div class="card-index">01</div><h3>Enter</h3><p>Enter your WhatsApp number with its international country code, or choose QR mode.</p></article><article class="how-card"><div class="card-index">02</div><h3>Authenticate</h3><p>Use the real pairing code in WhatsApp or scan the live QR image from Linked Devices.</p></article><article class="how-card"><div class="card-index">03</div><h3>Connect</h3><p>Once the backend reports a ready paired session, SIGMA XMD can come online.</p></article></div></div>
+    </section>
+
+    <section class="section" id="security">
+      <div class="container"><div class="section-kicker">04 / Security first</div><h2 class="section-heading">Designed to keep sensitive state server-side.</h2><p class="section-copy">This page only displays the authentication output returned by the existing service. It does not expose session files, API keys, or credentials.</p><div class="security-grid"><article class="info-card"><div class="info-icon">⌁</div><h3>Secure authentication</h3><p>Pairing requests are validated by the backend before a code is returned.</p></article><article class="info-card"><div class="info-icon">▣</div><h3>Private session</h3><p>Authentication state remains in the bot runtime instead of being rendered in the browser.</p></article><article class="info-card"><div class="info-icon">⚡</div><h3>Fast connection</h3><p>Live status and QR availability are refreshed from the service without a page reload.</p></article><article class="info-card"><div class="info-icon">◈</div><h3>Protected credentials</h3><p>Only a temporary pairing code or QR image is shown when the backend provides it.</p></article></div></div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container"><div class="section-kicker">05 / SIGMA features</div><h2 class="section-heading">A premium control surface for one important action.</h2><div class="feature-grid"><article class="feature-card"><div class="info-icon">⚡</div><h3>Fast pairing</h3><p>Move from number entry to code display in one focused flow.</p></article><article class="feature-card"><div class="info-icon">◌</div><h3>Mobile ready</h3><p>Responsive layouts, touch targets, and readable code on small screens.</p></article><article class="feature-card"><div class="info-icon">⌁</div><h3>Multi-method</h3><p>Pairing Code and QR authentication remain separate, clear experiences.</p></article><article class="feature-card"><div class="info-icon">✦</div><h3>Modern UI</h3><p>Glass panels, holographic depth, motion, and a focused SIGMA identity.</p></article><article class="feature-card"><div class="info-icon">●</div><h3>Live status</h3><p>Service, socket, session, and QR state reflect the backend response.</p></article><article class="feature-card"><div class="info-icon">▣</div><h3>Secure design</h3><p>Client-side code never embeds secrets or authentication state.</p></article></div></div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container"><div class="section-kicker">06 / FAQ</div><h2 class="section-heading">Answers before you connect.</h2><div class="faq-list"><details class="faq-item"><summary>What is SIGMA XMD?</summary><div class="faq-answer">SIGMA XMD is a WhatsApp bot platform. This portal is the authentication surface used to connect an authorized WhatsApp account to the running bot.</div></details><details class="faq-item"><summary>How do I generate a pairing code?</summary><div class="faq-answer">Enter your full international phone number using digits only, then select Generate Pairing Code. The backend must be ready before it can return a code.</div></details><details class="faq-item"><summary>How do I scan the QR code?</summary><div class="faq-answer">Open WhatsApp, go to Settings, select Linked Devices, choose Link a Device, and scan the live QR displayed in the QR authentication section.</div></details><details class="faq-item"><summary>Why did my pairing code expire?</summary><div class="faq-answer">WhatsApp pairing codes are temporary. Request a fresh code from this page and enter it promptly in the Linked Devices flow.</div></details><details class="faq-item"><summary>Why is the QR code not working?</summary><div class="faq-answer">The QR may have expired or the bot may still be connecting. Use Refresh QR, keep the page open, and scan the newest image shown by the backend.</div></details><details class="faq-item"><summary>Is my phone number stored?</summary><div class="faq-answer">The browser sends the number to the existing `/api/pair` endpoint for the pairing request. This frontend does not persist it in local storage or cookies.</div></details><details class="faq-item"><summary>What should I do if authentication fails?</summary><div class="faq-answer">Confirm the number format, wait for the service to become ready, then retry. If the backend reports a rate limit or connection error, wait before making another request.</div></details></div></div>
+    </section>
+  </main>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <footer><div class="container"><div class="footer-grid"><div class="footer-brand">SIGMA Σ <small>WhatsApp Authentication Portal</small></div><nav class="footer-links" aria-label="Footer navigation"><a href="#home">HOME</a><a href="#pair">PAIR</a><a href="#status">STATUS</a><a href="#features">FEATURES</a><a href="#faq">FAQ</a></nav><div class="footer-brand" style="font-size:11px;color:var(--muted);letter-spacing:.08em;">ᴋᴜʀᴏx ᴅᴇᴠ × ᴍᴀɴɪ</div></div><div class="copyright">© 2026 SIGMA XMD · Authentication only · Use responsibly.</div></div></footer>
+
   <script>
-    const tabs = [...document.querySelectorAll('.tab')];
-    const panels = { pair: document.querySelector('#pair-panel'), qr: document.querySelector('#qr-panel') };
-    let qrTimer;
-    function selectTab(name) { tabs.forEach(tab => { const active = tab.dataset.tab === name; tab.classList.toggle('active', active); tab.setAttribute('aria-selected', String(active)); }); Object.entries(panels).forEach(([key, panel]) => panel.classList.toggle('active', key === name)); if (name === 'qr') { refreshQr(); clearInterval(qrTimer); qrTimer = setInterval(refreshQr, 4000); } else clearInterval(qrTimer); }
-    tabs.forEach(tab => tab.addEventListener('click', () => selectTab(tab.dataset.tab)));
-    const pairForm = document.querySelector('#pair-form'); const pairInput = document.querySelector('#phone'); const pairButton = document.querySelector('#pair-submit'); const pairResult = document.querySelector('#pair-result');
-    pairForm.addEventListener('submit', async event => { event.preventDefault(); const phone = pairInput.value.replace(/\D/g, ''); pairResult.className='result'; pairResult.textContent=''; pairButton.disabled=true; pairButton.textContent='Connecting to WhatsApp…'; try { const response=await fetch('/api/pair',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone})}); const data=await response.json(); if(!response.ok) throw new Error(data.error||'Unable to generate a pairing code.'); pairResult.className='result show'; pairResult.innerHTML='<div class="result-label">Your pairing code</div><div class="code"></div><div class="result-copy">Enter this code in WhatsApp: Settings → Linked devices → Link with phone number instead.</div>'; pairResult.querySelector('.code').textContent=data.code; } catch(error) { pairResult.className='result show error'; pairResult.textContent=error.message; } finally { pairButton.disabled=false; pairButton.textContent='Generate pairing code'; } });
-    const qrImage=document.querySelector('#qr-image'); const qrMessage=document.querySelector('#qr-message'); const qrStatus=document.querySelector('#qr-status');
-    async function refreshQr() { try { const response=await fetch('/api/qr',{cache:'no-store'}); const data=await response.json(); if(!response.ok) { qrImage.classList.remove('show'); qrMessage.classList.remove('hidden'); qrMessage.textContent=data.error||'QR code is not ready yet.'; qrStatus.textContent='Waiting for the WhatsApp connection…'; return; } qrImage.src=data.qrDataUrl; qrImage.classList.add('show'); qrMessage.classList.add('hidden'); qrStatus.textContent='QR updated. Scan it from WhatsApp → Settings → Linked devices.'; } catch(error) { qrStatus.textContent='Unable to reach the pairing service.'; } }
-    document.querySelector('#qr-refresh').addEventListener('click', refreshQr);
+    (() => {
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const state = { status: null, qrTimer: null, statusTimer: null, pairCode: '' };
+
+      const toast = (message, type = 'info') => {
+        const icons = { success: '✓', error: '✕', warning: '⚠', info: '●' };
+        const item = document.createElement('div');
+        item.className = `toast ${type}`;
+        item.innerHTML = `<span class="toast-icon">${icons[type] || icons.info}</span><span>${message}</span>`;
+        $('#toast-region').appendChild(item);
+        window.setTimeout(() => { item.style.opacity = '0'; item.style.transform = 'translateX(20px)'; window.setTimeout(() => item.remove(), 240); }, 3600);
+      };
+
+      const setText = (selector, value) => { const node = $(selector); if (node) node.textContent = value; };
+      const setBadge = (selector, value, live = false) => { const node = $(selector); if (!node) return; node.textContent = value; node.classList.toggle('live', live); };
+      const formatTime = value => value ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+
+      function statusLabel(data) {
+        if (!data) return { title: 'OFFLINE', detail: 'Unable to reach the authentication service.', stage: 0 };
+        if (data.paired) return { title: 'CONNECTED', detail: 'The backend confirms an authenticated WhatsApp session.', stage: 4 };
+        if (data.requestInFlight) return { title: 'CONNECTING', detail: 'A pairing-code request is currently being processed.', stage: 2 };
+        if (data.ready && data.qrAvailable) return { title: 'WAITING', detail: 'Authentication service is ready; scan the available QR.', stage: 2 };
+        if (data.ready) return { title: 'AUTH READY', detail: 'WhatsApp socket is ready for authentication.', stage: 1 };
+        return { title: 'WAITING', detail: 'Waiting for the WhatsApp authentication service.', stage: 0 };
+      }
+
+      function renderStatus(data) {
+        state.status = data;
+        const info = statusLabel(data);
+        const serviceOnline = !!data;
+        setText('#nav-system', serviceOnline ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE');
+        setText('#metric-server', serviceOnline ? 'ONLINE' : 'OFFLINE');
+        setText('#metric-auth', info.title);
+        setText('#metric-qr', data?.qrAvailable ? 'READY' : 'STANDBY');
+        setText('#hero-server', serviceOnline ? 'ONLINE' : 'OFFLINE');
+        setText('#hero-auth', info.title);
+        setText('#hero-qr', data?.qrAvailable ? 'READY' : 'STANDBY');
+        setText('#connection-state', info.title);
+        setText('#connection-detail', info.detail);
+        setBadge('#state-service', serviceOnline ? 'ONLINE' : 'OFFLINE', serviceOnline);
+        setBadge('#state-socket', data?.ready ? 'READY' : 'WAITING', !!data?.ready);
+        setBadge('#state-session', data?.paired ? 'PAIRED' : 'UNPAIRED', !!data?.paired);
+        setBadge('#state-qr', data?.qrAvailable ? 'AVAILABLE' : 'STANDBY', !!data?.qrAvailable);
+        setBadge('#state-time', formatTime(new Date().toISOString()));
+        $$('.timeline-step').forEach((item, index) => item.classList.toggle('active', index <= info.stage));
+      }
+
+      async function getStatus() {
+        try {
+          const response = await fetch('/api/status', { cache: 'no-store' });
+          if (!response.ok) throw new Error('Status request failed');
+          const data = await response.json();
+          renderStatus(data);
+          return data;
+        } catch (_) {
+          renderStatus(null);
+          return null;
+        }
+      }
+
+      async function refreshQr(showToast = false) {
+        const image = $('#qr-image');
+        const placeholder = $('#qr-placeholder');
+        const refresh = $('#qr-refresh');
+        if (refresh) { refresh.disabled = true; refresh.innerHTML = '<span class="loader"></span> REFRESHING'; }
+        setText('#qr-state', 'GENERATING');
+        setText('#qr-live-status', 'Requesting the latest QR state…');
+        try {
+          const response = await fetch('/api/qr', { cache: 'no-store' });
+          const data = await response.json();
+          if (!response.ok || !data.qrDataUrl) {
+            image.classList.remove('show');
+            placeholder.classList.remove('hidden');
+            setText('#qr-state', 'WAITING');
+            setText('#qr-updated', data.error || 'QR code is not available yet.');
+            setText('#qr-live-status', 'QR is not available yet.');
+            if (showToast) toast(data.error || 'QR code is not available yet.', 'warning');
+          } else {
+            image.src = data.qrDataUrl;
+            image.classList.add('show');
+            placeholder.classList.add('hidden');
+            setText('#qr-state', 'READY');
+            setText('#qr-updated', `Updated ${formatTime(data.updatedAt)}`);
+            setText('#qr-live-status', 'Live QR ready to scan.');
+            if (showToast) toast('A fresh QR code is ready.', 'success');
+          }
+        } catch (_) {
+          image.classList.remove('show');
+          placeholder.classList.remove('hidden');
+          setText('#qr-state', 'ERROR');
+          setText('#qr-updated', 'Unable to reach the QR service.');
+          setText('#qr-live-status', 'Backend unavailable.');
+          if (showToast) toast('Unable to reach the QR service.', 'error');
+        } finally {
+          if (refresh) { refresh.disabled = false; refresh.textContent = '↻ REFRESH QR'; }
+          getStatus();
+        }
+      }
+
+      function selectMode(mode) {
+        $$('.mode-card').forEach(card => { const active = card.dataset.mode === mode; card.classList.toggle('active', active); card.setAttribute('aria-pressed', String(active)); });
+        const pairPanel = $('#pair-panel');
+        const qrPanel = $('#qr-panel');
+        const pairActive = mode === 'pair';
+        pairPanel.style.display = pairActive ? '' : 'none';
+        qrPanel.style.display = pairActive ? '' : 'grid';
+        if (pairActive) { window.clearInterval(state.qrTimer); state.qrTimer = null; }
+        else { refreshQr(); window.clearInterval(state.qrTimer); state.qrTimer = window.setInterval(refreshQr, 5000); }
+      }
+
+      $('#pair-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const input = $('#phone');
+        const button = $('#pair-submit');
+        const error = $('#pair-error');
+        const display = $('#code-display');
+        const value = input.value.replace(/\D/g, '');
+        error.textContent = '';
+        display.classList.remove('show');
+        if (!/^\d{6,15}$/.test(value)) { error.textContent = 'Enter 6–15 digits including your country code.'; toast('Enter a valid international phone number.', 'error'); input.focus(); return; }
+        button.disabled = true;
+        button.innerHTML = '<span class="loader"></span> CONNECTING';
+        setText('#terminal-line', 'Opening a secure request to the pairing service.');
+        setText('#terminal-status', 'Requesting pairing code…');
+        toast('Requesting a real pairing code…', 'info');
+        try {
+          const response = await fetch('/api/pair', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: value }) });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.code) throw new Error(data.error || 'Unable to generate a pairing code.');
+          state.pairCode = String(data.code);
+          setText('#pair-code', state.pairCode);
+          display.classList.add('show');
+          setText('#terminal-line', 'Backend returned a temporary authentication code.');
+          setText('#terminal-status', 'Code generated. Enter it in WhatsApp.');
+          button.innerHTML = 'GENERATE NEW CODE <span>→</span>';
+          toast('Pairing code generated successfully.', 'success');
+          getStatus();
+        } catch (err) {
+          error.textContent = err.message || 'Unable to generate a pairing code.';
+          setText('#terminal-status', 'Request failed. Try again when the service is ready.');
+          toast(error.textContent, 'error');
+          button.innerHTML = 'RETRY PAIRING CODE <span>→</span>';
+        } finally { button.disabled = false; }
+      });
+
+      $('#copy-code').addEventListener('click', async event => {
+        const button = event.currentTarget;
+        if (!state.pairCode) return;
+        try {
+          await navigator.clipboard.writeText(state.pairCode);
+          button.classList.add('copied'); button.textContent = '✓ COPIED!'; toast('Pairing code copied successfully.', 'success');
+          window.setTimeout(() => { button.classList.remove('copied'); button.textContent = '⧉ COPY CODE'; }, 2600);
+        } catch (_) {
+          button.classList.add('error'); button.textContent = '⚠ COPY FAILED'; toast('Unable to copy. Please copy the code manually.', 'warning');
+          window.setTimeout(() => { button.classList.remove('error'); button.textContent = '⧉ COPY CODE'; }, 2600);
+        }
+      });
+
+      $('#qr-refresh').addEventListener('click', () => refreshQr(true));
+      $$('.mode-card').forEach(card => card.addEventListener('click', () => selectMode(card.dataset.mode)));
+      $('#menu-toggle').addEventListener('click', () => { const links = $('#nav-links'); const open = links.classList.toggle('open'); $('#menu-toggle').setAttribute('aria-expanded', String(open)); });
+      $$('#nav-links a').forEach(link => link.addEventListener('click', () => { $('#nav-links').classList.remove('open'); $('#menu-toggle').setAttribute('aria-expanded', 'false'); }));
+
+      const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); } }), { threshold: .12 });
+      $$('.section, .mode-card, .auth-panel, .info-card, .feature-card, .how-card, .timeline-card').forEach(node => { node.classList.add('reveal'); revealObserver.observe(node); });
+      const navObserver = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) $$('.nav-links a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`)); }), { rootMargin: '-35% 0px -55% 0px' });
+      $$('#home, #pair, #status, #features, #faq').forEach(node => navObserver.observe(node));
+
+      const canvas = $('#particles');
+      const context = canvas.getContext('2d');
+      const particles = [];
+      function resizeCanvas() { canvas.width = window.innerWidth * devicePixelRatio; canvas.height = window.innerHeight * devicePixelRatio; context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+      function seedParticles() { particles.length = 0; const count = reduceMotion ? 0 : Math.min(48, Math.max(18, Math.floor(window.innerWidth / 30))); for (let i = 0; i < count; i++) particles.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: Math.random() * 1.7 + .3, vx: (Math.random() - .5) * .12, vy: (Math.random() - .5) * .12, a: Math.random() * .4 + .12 }); }
+      function drawParticles() { context.clearRect(0, 0, window.innerWidth, window.innerHeight); particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < -5) p.x = window.innerWidth + 5; if (p.x > window.innerWidth + 5) p.x = -5; if (p.y < -5) p.y = window.innerHeight + 5; if (p.y > window.innerHeight + 5) p.y = -5; context.beginPath(); context.arc(p.x, p.y, p.r, 0, Math.PI * 2); context.fillStyle = `rgba(167,255,207,${p.a})`; context.fill(); }); if (!reduceMotion) requestAnimationFrame(drawParticles); }
+      resizeCanvas(); seedParticles(); drawParticles(); window.addEventListener('resize', () => { resizeCanvas(); seedParticles(); }, { passive: true });
+
+      selectMode('pair');
+      getStatus();
+      state.statusTimer = window.setInterval(getStatus, 6000);
+      window.addEventListener('beforeunload', () => { window.clearInterval(state.qrTimer); window.clearInterval(state.statusTimer); });
+    })();
   </script>
 </body>
 </html>
