@@ -7,7 +7,7 @@ async function aiCommand(sock, chatId, message) {
         
         if (!text) {
             return await sock.sendMessage(chatId, { 
-                text: "Please provide a question after .gpt or .gemini\n\nExample: .gpt write a basic html code"
+                text: "Please provide a question after .ai, .gpt, or .gemini\n\nExample: .ai write a basic html code"
             }, {
                 quoted: message
             });
@@ -20,7 +20,7 @@ async function aiCommand(sock, chatId, message) {
 
         if (!query) {
             return await sock.sendMessage(chatId, { 
-                text: "Please provide a question after .gpt or .gemini"
+                text: "Please provide a question after .ai, .gpt, or .gemini"
             }, {quoted:message});
         }
 
@@ -30,7 +30,7 @@ async function aiCommand(sock, chatId, message) {
                 react: { text: '🤖', key: message.key }
             });
 
-            if (['.gpt', '.summarize', '.rewrite', '.deepseek', '.qwen'].includes(command)) {
+            if (['.ai', '.gpt', '.summarize', '.rewrite', '.deepseek', '.qwen'].includes(command)) {
                 // Call the GPT API
                 const instruction = command === '.summarize' ? `Summarize clearly and briefly: ${query}`
                     : command === '.rewrite' ? `Rewrite this text with improved grammar and clarity: ${query}`

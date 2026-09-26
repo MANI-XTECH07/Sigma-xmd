@@ -305,7 +305,7 @@ async function handleMenuCommand(sock, chatId, message, rawText) {
         const songCommand = require('./song');
         await songCommand(sock, chatId, messageWithArgs); return true;
     }
-    if (['gpt', 'gemini', 'deepseek', 'qwen', 'summarize', 'rewrite'].includes(command)) {
+    if (['ai', 'gpt', 'gemini', 'deepseek', 'qwen', 'summarize', 'rewrite'].includes(command)) {
         const aiCommand = require('./ai');
         await aiCommand(sock, chatId, messageWithArgs); return true;
     }

@@ -605,7 +605,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await warnCommand(sock, chatId, senderId, mentionedJidListWarn, message);
                 break;
             case userMessage.startsWith('.tts'):
-                const text = userMessage.slice(4).trim();
+                const text = rawText.slice(4).trim();
                 await ttsCommand(sock, chatId, text, message);
                 break;
             case userMessage.startsWith('.delete') || userMessage.startsWith('.del'):
@@ -755,7 +755,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await factCommand(sock, chatId, message, message);
                 break;
             case userMessage.startsWith('.weather'):
-                const city = userMessage.slice(9).trim();
+                const city = rawText.slice(8).trim();
                 if (city) {
                     await weatherCommand(sock, chatId, message, city);
                 } else {
@@ -813,7 +813,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await eightBallCommand(sock, chatId, question);
                 break;
             case userMessage.startsWith('.lyrics'):
-                const songTitle = userMessage.split(' ').slice(1).join(' ');
+                const songTitle = rawText.split(/\s+/).slice(1).join(' ');
                 await lyricsCommand(sock, chatId, songTitle, message);
                 break;
             case userMessage.startsWith('.simp'):
@@ -1010,58 +1010,58 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await simpCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.metallic'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'metallic');
+                await textmakerCommand(sock, chatId, message, rawText, 'metallic');
                 break;
             case userMessage.startsWith('.ice'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'ice');
+                await textmakerCommand(sock, chatId, message, rawText, 'ice');
                 break;
             case userMessage.startsWith('.snow'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'snow');
+                await textmakerCommand(sock, chatId, message, rawText, 'snow');
                 break;
             case userMessage.startsWith('.impressive'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'impressive');
+                await textmakerCommand(sock, chatId, message, rawText, 'impressive');
                 break;
             case userMessage.startsWith('.matrix'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'matrix');
+                await textmakerCommand(sock, chatId, message, rawText, 'matrix');
                 break;
             case userMessage.startsWith('.light'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'light');
+                await textmakerCommand(sock, chatId, message, rawText, 'light');
                 break;
             case userMessage.startsWith('.neon'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'neon');
+                await textmakerCommand(sock, chatId, message, rawText, 'neon');
                 break;
             case userMessage.startsWith('.devil'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'devil');
+                await textmakerCommand(sock, chatId, message, rawText, 'devil');
                 break;
             case userMessage.startsWith('.purple'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'purple');
+                await textmakerCommand(sock, chatId, message, rawText, 'purple');
                 break;
             case userMessage.startsWith('.thunder'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'thunder');
+                await textmakerCommand(sock, chatId, message, rawText, 'thunder');
                 break;
             case userMessage.startsWith('.leaves'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'leaves');
+                await textmakerCommand(sock, chatId, message, rawText, 'leaves');
                 break;
             case userMessage.startsWith('.1917'):
-                await textmakerCommand(sock, chatId, message, userMessage, '1917');
+                await textmakerCommand(sock, chatId, message, rawText, '1917');
                 break;
             case userMessage.startsWith('.arena'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'arena');
+                await textmakerCommand(sock, chatId, message, rawText, 'arena');
                 break;
             case userMessage.startsWith('.hacker'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'hacker');
+                await textmakerCommand(sock, chatId, message, rawText, 'hacker');
                 break;
             case userMessage.startsWith('.sand'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'sand');
+                await textmakerCommand(sock, chatId, message, rawText, 'sand');
                 break;
             case userMessage.startsWith('.blackpink'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'blackpink');
+                await textmakerCommand(sock, chatId, message, rawText, 'blackpink');
                 break;
             case userMessage.startsWith('.glitch'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'glitch');
+                await textmakerCommand(sock, chatId, message, rawText, 'glitch');
                 break;
             case userMessage.startsWith('.fire'):
-                await textmakerCommand(sock, chatId, message, userMessage, 'fire');
+                await textmakerCommand(sock, chatId, message, rawText, 'fire');
                 break;
             case userMessage.startsWith('.antidelete'):
                 const antideleteMatch = userMessage.slice(11).trim();
@@ -1119,12 +1119,12 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage.startsWith('.tiktok') || userMessage.startsWith('.tt'):
                 await tiktokCommand(sock, chatId, message);
                 break;
-            case userMessage.startsWith('.gpt') || userMessage.startsWith('.gemini'):
+            case userMessage.startsWith('.ai') || userMessage.startsWith('.gpt') || userMessage.startsWith('.gemini'):
                 await aiCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.translate') || userMessage.startsWith('.trt'):
                 const commandLength = userMessage.startsWith('.translate') ? 10 : 4;
-                await handleTranslateCommand(sock, chatId, message, userMessage.slice(commandLength));
+                await handleTranslateCommand(sock, chatId, message, rawText.slice(commandLength));
                 return;
             case userMessage.startsWith('.ss') || userMessage.startsWith('.ssweb') || userMessage.startsWith('.screenshot'):
                 const ssCommandLength = userMessage.startsWith('.screenshot') ? 11 : (userMessage.startsWith('.ssweb') ? 6 : 3);
@@ -1253,6 +1253,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                     await miscCommand(sock, chatId, message, args);
                 }
                 break;
+            case userMessage.startsWith('.anime'):
             case userMessage.startsWith('.animu'):
                 {
                     const parts = userMessage.trim().split(/\s+/);
@@ -1333,20 +1334,16 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await removebgCommand.exec(sock, message, userMessage.split(' ').slice(1));
                 break;
             case userMessage.startsWith('.remini') || userMessage.startsWith('.enhance') || userMessage.startsWith('.upscale'):
-                await reminiCommand(sock, chatId, message, userMessage.split(' ').slice(1));
+                await reminiCommand(sock, chatId, message, rawText.split(/\s+/).slice(1));
                 break;
             case userMessage.startsWith('.sora'):
                 await soraCommand(sock, chatId, message);
                 break;
             default:
-                if (isGroup) {
-                    // Handle non-command group messages
-                    if (userMessage) {  // Make sure there's a message
-                        await handleChatbotResponse(sock, chatId, message, userMessage, senderId);
-                    }
-                    await handleTagDetection(sock, chatId, message, senderId);
-                    await handleMentionDetection(sock, chatId, message);
-                }
+                await sock.sendMessage(chatId, {
+                    text: `❌ Unknown command: *.${command}*\n\nUse *.menu* to see all available commands.`,
+                    ...channelInfo
+                }, { quoted: message });
                 commandExecuted = false;
                 break;
         }
