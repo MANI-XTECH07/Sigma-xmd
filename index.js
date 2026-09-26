@@ -110,9 +110,11 @@ async function startXeonBotInc() {
             generateHighQualityLinkPreview: true,
             syncFullHistory: false,
             getMessage: async (key) => {
-                let jid = jidNormalizedUser(key.remoteJid)
-                let msg = await store.loadMessage(jid, key.id)
-                return msg?.message || ""
+                const remoteJid = key.remoteJid || key.remoteJidAlt
+                if (!remoteJid || !key.id) return undefined
+                const jid = jidNormalizedUser(remoteJid)
+                const msg = await store.loadMessage(jid, key.id)
+                return msg?.message || undefined
             },
             msgRetryCounterCache,
             defaultQueryTimeoutMs: 60000,
@@ -144,11 +146,6 @@ async function startXeonBotInc() {
                 if (!isGroup) return // Block DMs in private mode, but allow group messages
             }
             if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
-
-            // Clear message retry cache to prevent memory bloat
-            if (XeonBotInc?.msgRetryCounterCache) {
-                XeonBotInc.msgRetryCounterCache.clear()
-            }
 
             try {
                 await handleMessages(XeonBotInc, chatUpdate, true)

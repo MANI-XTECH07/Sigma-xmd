@@ -3,6 +3,7 @@ const yts = require('yt-search');
 const fs = require('fs');
 const path = require('path');
 const { toAudio } = require('../lib/converter');
+const ytdl = require('ytdl-core');
 
 const AXIOS_DEFAULTS = {
 	timeout: 60000,
@@ -65,6 +66,20 @@ async function getOkatsuDownloadByUrl(youtubeUrl) {
 		};
 	}
 	throw new Error('Okatsu ytmp3 returned no download');
+}
+
+async function getDirectYoutubeAudio(youtubeUrl, title) {
+	if (!ytdl.validateURL(youtubeUrl)) throw new Error('Invalid YouTube URL');
+	const stream = ytdl(youtubeUrl, {
+		filter: 'audioonly',
+		quality: 'highestaudio',
+		highWaterMark: 1 << 25
+	});
+	const chunks = [];
+	for await (const chunk of stream) chunks.push(chunk);
+	const buffer = Buffer.concat(chunks);
+	if (!buffer.length) throw new Error('Direct YouTube download returned an empty file');
+	return { buffer, title };
 }
 
 async function songCommand(sock, chatId, message) {
@@ -190,7 +205,21 @@ async function songCommand(sock, chatId, message) {
 			}
 		}
 		
-		// If all APIs failed, throw error
+			// Some providers return URLs that WhatsApp cannot fetch because of
+			// regional restrictions. Download directly and send a local buffer.
+			if (!downloadSuccess || !audioBuffer) {
+				try {
+					const direct = await getDirectYoutubeAudio(video.url, video.title);
+					audioBuffer = direct.buffer;
+					audioData = { title: direct.title };
+					downloadSuccess = true;
+					console.log('[SONG] Direct YouTube audio fallback succeeded.');
+				} catch (directErr) {
+					console.error('[SONG] Direct YouTube fallback failed:', directErr.message);
+				}
+			}
+
+			// If all APIs failed, throw error
 		if (!downloadSuccess || !audioBuffer) {
 			throw new Error('All download sources failed. The content may be unavailable or blocked in your region.');
 		}
