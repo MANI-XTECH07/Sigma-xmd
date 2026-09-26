@@ -99,7 +99,11 @@ async function startXeonBotInc() {
         let { version, isLatest } = await fetchLatestBaileysVersion()
         const { state, saveCreds } = await useMultiFileAuthState(`./session`)
         const msgRetryCounterCache = new NodeCache()
-        const isOwnLidJid = (jid) => {
+        const shouldIgnoreJid = (jid) => {
+            // Status broadcasts can contain self-sent messages addressed to
+            // our LID. Baileys 6.x may not have a matching status session,
+            // which creates repeated "No session record" retry logs.
+            if (jid === 'status@broadcast') return true
             const ownLid = state.creds?.me?.lid
             if (!ownLid || !jid || !String(jid).includes('@lid')) return false
             return String(jid).split(':')[0].split('@')[0] === String(ownLid).split(':')[0].split('@')[0]
@@ -119,9 +123,9 @@ async function startXeonBotInc() {
             // self-device protocol messages on WhatsApp's LID session.
             emitOwnEvents: false,
             // Baileys can receive a peer copy addressed to the bot's own LID
-            // after a self-send. Ignoring only that LID prevents the known
-            // Bad MAC/session-retry loop without blocking normal commands.
-            shouldIgnoreJid: isOwnLidJid,
+            // after a self-send, plus status broadcasts that can contain
+            // self-status messages without a matching Signal session.
+            shouldIgnoreJid,
             generateHighQualityLinkPreview: true,
             syncFullHistory: false,
             getMessage: async (key) => {
