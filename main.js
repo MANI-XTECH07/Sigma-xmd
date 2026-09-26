@@ -42,6 +42,11 @@ const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./comman
 // Command imports
 const tagAllCommand = require('./commands/tagall');
 const helpCommand = require('./commands/help');
+const {
+    menuCommand, statusCommand, runtimeCommand, systemCommand, botInfoCommand,
+    dateCommand, diceCommand, coinCommand, slotsCommand, addMemberCommand,
+    setBioCommand, aliasCommand, handleMenuCommand
+} = require('./commands/menuCommands');
 const banCommand = require('./commands/ban');
 const { promoteCommand } = require('./commands/promote');
 const { demoteCommand } = require('./commands/demote');
@@ -324,11 +329,11 @@ async function handleMessages(sock, messageUpdate, printLog) {
         }
 
         // List of admin commands
-        const adminCommands = ['.mute', '.unmute', '.ban', '.unban', '.promote', '.demote', '.kick', '.tagall', '.tagnotadmin', '.hidetag', '.antilink', '.antitag', '.setgdesc', '.setgname', '.setgpp'];
+        const adminCommands = ['.mute', '.unmute', '.ban', '.unban', '.promote', '.demote', '.kick', '.add', '.antispam', '.antiflood', '.antibot', '.tagall', '.tagnotadmin', '.hidetag', '.antilink', '.antitag', '.setgdesc', '.setgname', '.setgpp'];
         const isAdminCommand = adminCommands.some(cmd => userMessage.startsWith(cmd));
 
         // List of owner commands
-        const ownerCommands = ['.mode', '.autostatus', '.antidelete', '.cleartmp', '.setpp', '.clearsession', '.areact', '.autoreact', '.autotyping', '.autoread', '.pmblocker'];
+        const ownerCommands = ['.mode', '.autostatus', '.antidelete', '.cleartmp', '.setpp', '.setbio', '.restart', '.shutdown', '.clearsession', '.areact', '.autoreact', '.autotyping', '.autoread', '.pmblocker'];
         const isOwnerCommand = ownerCommands.some(cmd => userMessage.startsWith(cmd));
 
         let isSenderAdmin = false;
@@ -350,6 +355,10 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 userMessage === '.unmute' ||
                 userMessage.startsWith('.ban') ||
                 userMessage.startsWith('.unban') ||
+                userMessage.startsWith('.add') ||
+                userMessage.startsWith('.antispam') ||
+                userMessage.startsWith('.antiflood') ||
+                userMessage.startsWith('.antibot') ||
                 userMessage.startsWith('.promote') ||
                 userMessage.startsWith('.demote')
             ) {
@@ -369,6 +378,12 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await sock.sendMessage(chatId, { text: '❌ This command is only available for the owner or sudo!' }, { quoted: message });
                 return;
             }
+        }
+
+        // Handle menu commands with dedicated implementations before legacy cases.
+        if (await handleMenuCommand(sock, chatId, message, rawText)) {
+            await addCommandReaction(sock, message);
+            return;
         }
 
         // Command handlers - Execute commands immediately without waiting for typing indicator
@@ -426,6 +441,54 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage === '.help' || userMessage === '.menu' || userMessage === '.bot' || userMessage === '.list':
                 await helpCommand(sock, chatId, message, global.channelLink);
                 commandExecuted = true;
+                break;
+            case userMessage === '.status':
+                await statusCommand(sock, chatId, message);
+                break;
+            case userMessage === '.runtime' || userMessage === '.uptime':
+                await runtimeCommand(sock, chatId, message);
+                break;
+            case userMessage === '.system':
+                await systemCommand(sock, chatId, message);
+                break;
+            case userMessage === '.botinfo':
+                await botInfoCommand(sock, chatId, message);
+                break;
+            case userMessage.startsWith('.setbio'):
+                await setBioCommand(sock, chatId, message, rawText.slice(7).trim());
+                break;
+            case userMessage.startsWith('.add'):
+                await addMemberCommand(sock, chatId, message, rawText.slice(4).trim());
+                break;
+            case userMessage === '.date':
+                await dateCommand(sock, chatId, message);
+                break;
+            case userMessage === '.dice':
+                await diceCommand(sock, chatId, message);
+                break;
+            case userMessage === '.coin' || userMessage === '.coinflip':
+                await coinCommand(sock, chatId, message);
+                break;
+            case userMessage === '.slots':
+                await slotsCommand(sock, chatId, message);
+                break;
+            case userMessage.startsWith('.audio'):
+            case userMessage.startsWith('.playlist'):
+                await aliasCommand(sock, chatId, message, userMessage.split(/\s+/)[0].slice(1));
+                break;
+            case userMessage.startsWith('.youtube'):
+            case userMessage.startsWith('.google'):
+            case userMessage.startsWith('.threads'):
+            case userMessage.startsWith('.twitter'):
+            case userMessage.startsWith('.pinterest'):
+            case userMessage.startsWith('.mediafire'):
+            case userMessage.startsWith('.mega'):
+            case userMessage.startsWith('.vision'):
+            case userMessage.startsWith('.summarize'):
+            case userMessage.startsWith('.rewrite'):
+            case userMessage.startsWith('.deepseek'):
+            case userMessage.startsWith('.qwen'):
+                await aliasCommand(sock, chatId, message, userMessage.split(/\s+/)[0].slice(1));
                 break;
             case userMessage === '.sticker' || userMessage === '.s':
                 await stickerCommand(sock, chatId, message);

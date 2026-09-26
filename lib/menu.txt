@@ -1,0 +1,302 @@
+╭━━━〔 ⚡ 𝐒𝐈𝐆𝐌𝐀 𝐗𝐌𝐃 〕━━━╮
+┃
+┃  ◈ ᴠᴇʀsɪᴏɴ  ➜  1.0.0
+┃  ◈ ᴏᴡɴᴇʀ    ➜  ᴍᴀɴɪ xᴛᴇᴄʜ
+┃  ◈ ᴍᴏᴅᴇ     ➜  ᴘᴜʙʟɪᴄ
+┃  ◈ ᴘʀᴇғɪx    ➜  .
+┃
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+╭─〔 🧬 ᴄᴏʀᴇ sʏsᴛᴇᴍ 〕─╮
+│ ✦ .menu
+│ ✦ .help
+│ ✦ .ping
+│ ✦ .alive
+│ ✦ .status
+│ ✦ .runtime
+│ ✦ .uptime
+│ ✦ .system
+│ ✦ .owner
+│ ✦ .botinfo
+│ ✦ .jid
+╰────────────────╯
+
+╭─〔 👑 ᴏᴡɴᴇʀ ᴄᴏɴᴛʀᴏʟ 〕─╮
+│ ✦ .mode <public/private>
+│ ✦ .settings
+│ ✦ .update
+│ ✦ .restart
+│ ✦ .shutdown
+│ ✦ .clearsession
+│ ✦ .cleartmp
+│ ✦ .setpp <reply image>
+│ ✦ .setbio <text>
+│ ✦ .autoread <on/off>
+│ ✦ .autoreact <on/off>
+│ ✦ .autotyping <on/off>
+│ ✦ .autostatus <on/off>
+│ ✦ .anticall <on/off>
+│ ✦ .antidelete <on/off>
+│ ✦ .pmblocker <on/off>
+╰────────────────╯
+
+╭─〔 🛡️ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ 〕─╮
+│ ✦ .groupinfo
+│ ✦ .admins
+│ ✦ .staff
+│ ✦ .tagall
+│ ✦ .tagadmin
+│ ✦ .tagnotadmin
+│ ✦ .hidetag <text>
+│ ✦ .kick @user
+│ ✦ .add <number>
+│ ✦ .promote @user
+│ ✦ .demote @user
+│ ✦ .warn @user
+│ ✦ .warnings @user
+│ ✦ .mute <minutes>
+│ ✦ .unmute
+│ ✦ .delete / .del
+│ ✦ .antilink <on/off>
+│ ✦ .antibadword <on/off>
+│ ✦ .antitag <on/off>
+│ ✦ .antiflood <on/off>
+│ ✦ .welcome <on/off>
+│ ✦ .goodbye <on/off>
+│ ✦ .setgname <name>
+│ ✦ .setgdesc <description>
+│ ✦ .setgpp <reply image>
+│ ✦ .resetlink
+╰────────────────╯
+
+╭─〔 👁️ ᴠɪᴇᴡ ᴏɴᴄᴇ & ᴍᴇᴅɪᴀ 〕─╮
+│ ✦ .vv
+│ ✦ .vvo
+│ ✦ .save
+│ ✦ .quoted
+│ ✦ .forward
+│ ✦ .react
+│ ✦ .pin
+│ ✦ .unpin
+│ ✦ .exif
+│ ✦ .media
+╰────────────────╯
+
+╭─〔 📢 sᴛᴀᴛᴜs ᴛᴏᴏʟs 〕─╮
+│ ✦ .statusdl
+│ ✦ .statussave
+│ ✦ .statusreact
+│ ✦ .statusreply
+│ ✦ .statusmention
+│ ✦ .statusview
+╰────────────────╯
+
+╭─〔 📡 ᴄʜᴀɴɴᴇʟ 〕─╮
+│ ✦ .channel
+│ ✦ .channels
+│ ✦ .channelinfo
+│ ✦ .channelfollow
+│ ✦ .channelunfollow
+│ ✦ .channelmute
+│ ✦ .channelreact
+│ ✦ .channelpost
+╰────────────────╯
+
+╭─〔 🎵 ᴍᴜsɪᴄ 〕─╮
+│ ✦ .play <song>
+│ ✦ .song <song>
+│ ✦ .audio <query>
+│ ✦ .video <query>
+│ ✦ .lyrics <song>
+│ ✦ .spotify <query>
+│ ✦ .ytmp3 <url>
+│ ✦ .ytmp4 <url>
+│ ✦ .playlist <query>
+│ ✦ .music <query>
+╰────────────────╯
+
+╭─〔 📥 ᴅᴏᴡɴʟᴏᴀᴅ ᴄᴇɴᴛᴇʀ 〕─╮
+│ ✦ .youtube <url>
+│ ✦ .tiktok <url>
+│ ✦ .instagram <url>
+│ ✦ .facebook <url>
+│ ✦ .twitter <url>
+│ ✦ .threads <url>
+│ ✦ .pinterest <url>
+│ ✦ .mediafire <url>
+│ ✦ .mega <url>
+╰────────────────╯
+
+╭─〔 🤖 ᴀɪ ʟᴀʙ 〕─╮
+│ ✦ .ai <question>
+│ ✦ .gpt <question>
+│ ✦ .gemini <question>
+│ ✦ .deepseek <question>
+│ ✦ .qwen <question>
+│ ✦ .imagine <prompt>
+│ ✦ .flux <prompt>
+│ ✦ .sora <prompt>
+│ ✦ .vision <reply image>
+│ ✦ .summarize <text>
+│ ✦ .rewrite <text>
+│ ✦ .translate <text>
+╰────────────────╯
+
+╭─〔 🖼️ ᴀɪ ɪᴍᴀɢᴇ 〕─╮
+│ ✦ .imagine <prompt>
+│ ✦ .flux <prompt>
+│ ✦ .upscale <reply image>
+│ ✦ .remini <reply image>
+│ ✦ .enhance <reply image>
+│ ✦ .removebg <reply image>
+│ ✦ .colorize <reply image>
+│ ✦ .animefy <reply image>
+│ ✦ .blur <reply image>
+╰────────────────╯
+
+╭─〔 🎨 sᴛɪᴄᴋᴇʀ sᴛᴜᴅɪᴏ 〕─╮
+│ ✦ .sticker <reply image>
+│ ✦ .simage <reply sticker>
+│ ✦ .take <packname>
+│ ✦ .steal <reply sticker>
+│ ✦ .emojimix <emoji>+<emoji>
+│ ✦ .attp <text>
+│ ✦ .ttp <text>
+│ ✦ .tgsticker <url>
+│ ✦ .meme
+╰────────────────╯
+
+╭─〔 🔎 sᴇᴀʀᴄʜ 〕─╮
+│ ✦ .google <query>
+│ ✦ .youtube <query>
+│ ✦ .github <query>
+│ ✦ .npm <package>
+│ ✦ .lyrics <song>
+│ ✦ .weather <city>
+│ ✦ .news
+│ ✦ .image <query>
+│ ✦ .movie <query>
+│ ✦ .anime <query>
+╰────────────────╯
+
+╭─〔 🌐 ᴡᴇʙ ᴛᴏᴏʟs 〕─╮
+│ ✦ .ss <url>
+│ ✦ .url <url>
+│ ✦ .short <url>
+│ ✦ .qr <text>
+│ ✦ .fetch <url>
+│ ✦ .whois <domain>
+│ ✦ .ip <address>
+│ ✦ .dns <domain>
+╰────────────────╯
+
+╭─〔 🧰 ᴜᴛɪʟɪᴛɪᴇs 〕─╮
+│ ✦ .tts <text>
+│ ✦ .trt <text> <lang>
+│ ✦ .calc <expression>
+│ ✦ .time <city>
+│ ✦ .date
+│ ✦ .fact
+│ ✦ .quote
+│ ✦ .joke
+│ ✦ .8ball <question>
+╰────────────────╯
+
+╭─〔 🎮 ɢᴀᴍᴇ ᴢᴏɴᴇ 〕─╮
+│ ✦ .tictactoe @user
+│ ✦ .rps
+│ ✦ .hangman
+│ ✦ .trivia
+│ ✦ .guess <letter>
+│ ✦ .truth
+│ ✦ .dare
+│ ✦ .dice
+│ ✦ .coin
+│ ✦ .slots
+╰────────────────╯
+
+╭─〔 🏆 xᴘ & ᴇᴄᴏɴᴏᴍʏ 〕─╮
+│ ✦ .profile
+│ ✦ .level
+│ ✦ .rank
+│ ✦ .leaderboard
+│ ✦ .daily
+│ ✦ .balance
+│ ✦ .coinflip
+│ ✦ .give @user <amount>
+╰────────────────╯
+
+╭─〔 🎌 ᴀɴɪᴍᴇ ᴡᴏʀʟᴅ 〕─╮
+│ ✦ .anime
+│ ✦ .waifu
+│ ✦ .poke
+│ ✦ .hug
+│ ✦ .kiss
+│ ✦ .pat
+│ ✦ .wink
+│ ✦ .cry
+│ ✦ .nom
+│ ✦ .facepalm
+╰────────────────╯
+
+╭─〔 🎭 ғᴜɴ ᴢᴏɴᴇ 〕─╮
+│ ✦ .ship @user
+│ ✦ .simp @user
+│ ✦ .character @user
+│ ✦ .wasted @user
+│ ✦ .compliment @user
+│ ✦ .insult @user
+│ ✦ .flirt
+│ ✦ .shayari
+│ ✦ .goodnight
+│ ✦ .roseday
+╰────────────────╯
+
+╭─〔 🔤 ᴛᴇxᴛ ᴍᴀᴋᴇʀ 〕─╮
+│ ✦ .metallic <text>
+│ ✦ .ice <text>
+│ ✦ .snow <text>
+│ ✦ .neon <text>
+│ ✦ .matrix <text>
+│ ✦ .light <text>
+│ ✦ .devil <text>
+│ ✦ .purple <text>
+│ ✦ .thunder <text>
+│ ✦ .leaves <text>
+│ ✦ .arena <text>
+│ ✦ .hacker <text>
+│ ✦ .sand <text>
+│ ✦ .blackpink <text>
+│ ✦ .glitch <text>
+│ ✦ .fire <text>
+╰────────────────╯
+
+╭─〔 💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ 〕─╮
+│ ✦ .repo
+│ ✦ .github
+│ ✦ .git
+│ ✦ .script
+│ ✦ .npm
+│ ✦ .sc
+│ ✦ .bug
+│ ✦ .logs
+│ ✦ .debug
+│ ✦ .source
+╰────────────────╯
+
+╭─〔 🔐 sᴇᴄᴜʀɪᴛʏ 〕─╮
+│ ✦ .antispam <on/off>
+│ ✦ .antiflood <on/off>
+│ ✦ .antibot <on/off>
+│ ✦ .antidelete <on/off>
+│ ✦ .antilink <on/off>
+│ ✦ .antitag <on/off>
+│ ✦ .pmblocker <on/off>
+╰────────────────╯
+
+╭━━〔 ⚡ sɪɢᴍᴀ xᴍᴅ 〕━━╮
+┃ ᴘᴏᴡᴇʀᴇᴅ ʙʏ
+┃ ᴋᴜʀᴏx ᴅᴇᴠ x ᴍᴀɴɪ
+┃
+┃ ᴍᴜʟᴛɪ-ᴅᴇᴠɪᴄᴇ • ᴀɪ • ᴀᴜᴛᴏᴍᴀᴛɪᴏɴ
+╰━━━━━━━━━━━━━━━━━━━━╯
