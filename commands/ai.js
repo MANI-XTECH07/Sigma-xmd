@@ -30,9 +30,12 @@ async function aiCommand(sock, chatId, message) {
                 react: { text: '🤖', key: message.key }
             });
 
-            if (command === '.gpt') {
+            if (['.gpt', '.summarize', '.rewrite', '.deepseek', '.qwen'].includes(command)) {
                 // Call the GPT API
-                const response = await axios.get(`https://zellapi.autos/ai/chatbot?text=${encodeURIComponent(query)}`);
+                const instruction = command === '.summarize' ? `Summarize clearly and briefly: ${query}`
+                    : command === '.rewrite' ? `Rewrite this text with improved grammar and clarity: ${query}`
+                        : query;
+                const response = await axios.get(`https://zellapi.autos/ai/chatbot?text=${encodeURIComponent(instruction)}`);
                 
                 if (response.data && response.data.status && response.data.result) {
                     const answer = response.data.result;
@@ -102,4 +105,4 @@ async function aiCommand(sock, chatId, message) {
     }
 }
 
-module.exports = aiCommand; 
+module.exports = aiCommand;

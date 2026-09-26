@@ -268,7 +268,7 @@ async function handleMenuCommand(sock, chatId, message, rawText) {
     const parts = rawText.trim().split(/\s+/);
     const command = (parts.shift() || '').slice(1).toLowerCase();
     const args = parts.join(' ');
-    const messageWithArgs = { ...message, message: { ...(message.message || {}), conversation: args } };
+    const messageWithArgs = { ...message, message: { ...(message.message || {}), conversation: `.${command}${args ? ` ${args}` : ''}` } };
     const handlers = {
         status: statusCommand, runtime: runtimeCommand, uptime: runtimeCommand,
         system: systemCommand, botinfo: botInfoCommand, date: dateCommand,
@@ -278,7 +278,7 @@ async function handleMenuCommand(sock, chatId, message, rawText) {
     if (handlers[command]) { await handlers[command](sock, chatId, message); return true; }
 
     if (['antispam', 'antiflood', 'antibot'].includes(command)) {
-        await toggleCommand(sock, chatId, message, command, parts[0]); return true;
+        await require('./extraTools').securityCommand(sock, chatId, message, command, parts[0]); return true;
     }
     if (command === 'calc') { await calculateCommand(sock, chatId, message, args); return true; }
     if (command === 'time') {
@@ -299,16 +299,37 @@ async function handleMenuCommand(sock, chatId, message, rawText) {
     if (command === 'fetch') { await urlToolCommand(sock, chatId, message, command, args); return true; }
     if (command === 'youtube') {
         const videoCommand = require('./video');
-        await videoCommand(sock, chatId, message); return true;
+        await videoCommand(sock, chatId, messageWithArgs); return true;
     }
     if (['audio', 'playlist', 'music'].includes(command)) {
         const songCommand = require('./song');
-        await songCommand(sock, chatId, message); return true;
+        await songCommand(sock, chatId, messageWithArgs); return true;
     }
     if (['gpt', 'gemini', 'deepseek', 'qwen', 'summarize', 'rewrite'].includes(command)) {
         const aiCommand = require('./ai');
         await aiCommand(sock, chatId, messageWithArgs); return true;
     }
+    if (['save', 'forward', 'pin', 'unpin', 'exif'].includes(command)) {
+        const extra = require('./extraTools');
+        if (command === 'save') await extra.saveCommand(sock, chatId, message);
+        else if (command === 'forward') await extra.forwardCommand(sock, chatId, message);
+        else if (command === 'pin') await extra.pinCommand(sock, chatId, message);
+        else if (command === 'unpin') await extra.pinCommand(sock, chatId, message, true);
+        else await extra.exifCommand(sock, chatId, message);
+        return true;
+    }
+    if (command === 'media') { await require('./url')(sock, chatId, message); return true; }
+    if (command === 'google' || command === 'image') {
+        const extra = require('./extraTools');
+        await extra.googleCommand(sock, chatId, message, args, command === 'image'); return true;
+    }
+    if (command === 'vision') { await require('./extraTools').visionCommand(sock, chatId, message); return true; }
+    if (command === 'movie') { await require('./video')(sock, chatId, messageWithArgs); return true; }
+    if (command === 'waifu') { await require('./extraTools').waifuCommand(sock, chatId, message); return true; }
+    if (['profile', 'level', 'rank', 'leaderboard', 'daily', 'balance', 'give'].includes(command)) { await require('./extraTools').economyExtended(sock, chatId, message, command, args); return true; }
+    if (command === 'tagadmin') { await require('./extraTools').tagAdminCommand(sock, chatId, message); return true; }
+    if (command === 'colorize' || command === 'animefy') { await require('./extraTools').imageTransformCommand(sock, chatId, message, command); return true; }
+    if (command === 'ttp') { await require('./attp')(sock, chatId, message); return true; }
     if (command === 'add') { await addMemberCommand(sock, chatId, message, args); return true; }
     if (command === 'setbio') { await setBioCommand(sock, chatId, message, args); return true; }
     if (['statusdl', 'statussave', 'statusreact', 'statusreply', 'statusmention', 'statusview'].includes(command)) {
