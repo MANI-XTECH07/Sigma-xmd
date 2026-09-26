@@ -93,6 +93,8 @@ Set these optional environment variables before starting: `PORT`, `HOST`, and `P
 
 The pairing endpoint is rate-limited and uses the local Baileys socket. The QR endpoint refreshes automatically while WhatsApp is connecting. Set `BAILEYS_LOG_LEVEL=info` or `debug` when diagnosing connection issues.
 
+If WhatsApp shows **“Waiting for this message. This may take a while.”** on new bot replies, the linked device has stale sender keys. Stop the bot, run `npm run reset-session`, start it again, and pair a fresh device from the QR/pairing website. The reset script moves the old session to a timestamped backup and backs up the local message store; old already-stuck messages cannot be repaired retroactively.
+
 🚀 4️⃣ Deploy SIGMA XMD
 
 You can deploy SIGMA XMD on a supported Node.js hosting platform, VPS or your own server.

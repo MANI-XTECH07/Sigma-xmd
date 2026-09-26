@@ -9,6 +9,8 @@ baileys_store.json
 
 # Session files
 session/
+session-backup-*/
+baileys_store.json.bak
 
 # Environment variables
 .env
