@@ -12,10 +12,10 @@ function readJson(file, fallback) {
 }
 function writeJson(file, value) { fs.writeFileSync(file, JSON.stringify(value, null, 2)); }
 function getQuoted(message) {
-    return message.message?.extendedTextMessage?.contextInfo?.quotedMessage || message.message || null;
+    return message.message?.extendedTextMessage?.contextInfo?.quotedMessage || null;
 }
 async function mediaBuffer(message) {
-    const quoted = getQuoted(message);
+    const quoted = getQuoted(message) || message.message || null;
     const entries = [['imageMessage', 'image'], ['videoMessage', 'video'], ['audioMessage', 'audio'], ['documentMessage', 'document'], ['stickerMessage', 'sticker']];
     for (const [field, type] of entries) {
         if (!quoted?.[field]) continue;

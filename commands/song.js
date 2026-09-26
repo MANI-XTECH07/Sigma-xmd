@@ -84,18 +84,19 @@ async function getDirectYoutubeAudio(youtubeUrl, title) {
 }
 
 async function songCommand(sock, chatId, message) {
+    const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
+    const searchQuery = text.trim().split(/\s+/).slice(1).join(' ').trim();
     try {
-        const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
-        if (!text) {
+        if (!searchQuery) {
             await sock.sendMessage(chatId, { text: 'Usage: .song <song name or YouTube link>' }, { quoted: message });
             return;
         }
 
         let video;
-        if (text.includes('youtube.com') || text.includes('youtu.be')) {
-			video = { url: text };
+        if (searchQuery.includes('youtube.com') || searchQuery.includes('youtu.be')) {
+            video = { url: searchQuery };
         } else {
-			const search = await yts(text);
+            const search = await yts(searchQuery);
 			if (!search || !search.videos.length) {
                 await sock.sendMessage(chatId, { text: 'No results found.' }, { quoted: message });
                 return;
@@ -104,18 +105,18 @@ async function songCommand(sock, chatId, message) {
         }
 
         // Inform user
-        await sock.sendMessage(chatId, {
-            image: { url: video.thumbnail },
-            caption: messages.songFound({
-                title: video.title || text,
+		await sock.sendMessage(chatId, {
+			image: { url: video.thumbnail },
+			caption: messages.songFound({
+				title: video.title || searchQuery,
                 artist: video.author?.name || 'Unknown artist',
                 duration: video.timestamp || 'Unknown'
             })
         }, { quoted: message });
 
-        await sock.sendMessage(chatId, {
-            text: messages.ytmp3({
-                title: video.title || text,
+		await sock.sendMessage(chatId, {
+			text: messages.ytmp3({
+				title: video.title || searchQuery,
                 quality: 'Best available'
             })
         }, { quoted: message });
@@ -367,7 +368,7 @@ async function songCommand(sock, chatId, message) {
         
 		await sock.sendMessage(chatId, {
 			text: messages.commandError({
-				title: text || 'Song download',
+				title: searchQuery || 'Song download',
 				error: errorMessage.replace(/^❌\s*/, '')
 			})
 		}, { quoted: message });
