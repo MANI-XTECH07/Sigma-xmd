@@ -50,6 +50,8 @@ const store = require('./lib/lightweight_store')
 const pairing = require('./lib/pairing')
 const { startWebServer } = require('./lib/web')
 
+const connectionVideoPath = path.join(__dirname, 'assets', 'sigma-connected.mp4')
+
 // Initialize store
 store.readFromFile()
 const settings = require('./settings')
@@ -269,18 +271,69 @@ async function startXeonBotInc() {
 
             try {
                 const botNumber = XeonBotInc.user.id.split(':')[0] + '@s.whatsapp.net';
-                await XeonBotInc.sendMessage(botNumber, {
-                    text: `🤖 Bot Connected Successfully!\n\n⏰ Time: ${new Date().toLocaleString()}\n✅ Status: Online and Ready!\n\n✅Make sure to join below channel`,
-                    contextInfo: {
-                        forwardingScore: 1,
-                        isForwarded: true,
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363411061065067@newsletter',
-                            newsletterName: 'ꜱɪɢᴍᴀ xᴍᴅ',
-                            serverMessageId: -1
-                        }
+                const connectionCaption = `╭━━━〔 𓆩⚡𓆪 〕━━━╮
+𝐒𝐈𝐆𝐌𝐀  𝐗𝐌𝐃
+ᴛʜᴇ ᴘʀᴏᴛᴏᴄᴏʟ ᴡᴀᴋᴇs
+╰━━━〔 𓆩⚡𓆪 〕━━━╯
+
+      ⟡ 🟢 ⟡
+   𝐎𝐍𝐋𝐈𝐍𝐄
+
+ ╭────────────╮
+   𝟎𝟎:𝟎𝟎:𝟎𝟏
+ ╰────────────╯
+
+╭─╴╴╴ 𝐁 𝐎 𝐎 𝐓  𝐒 𝐄 𝐐 𝐔 𝐄 𝐍 𝐂 𝐄 ╶╶╮
+
+⟢ ᴄᴏɴɴᴇᴄᴛɪɴɢ    • • •
+⟢ ᴠᴇʀɪғʏɪɴɢ     • • •
+⟢ ᴅᴇᴘʟᴏʏɪɴɢ     • • •
+
+          ✓ 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐄
+
+╰╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╴╯
+
+╭───〔 𝐂 𝐎 𝐑 𝐄 〕───╮
+│
+│  🟢  ᴄᴏɴɴᴇᴄᴛɪᴏɴ   ── 𝐄𝐒𝐓𝐀𝐁𝐋𝐈𝐒𝐇𝐄𝐃
+│  ⚡  ʀᴇsᴘᴏɴsᴇ      ── 𝐑𝐄𝐀𝐃𝐘
+│  🛡️  sᴇᴄᴜʀɪᴛʏ      ── 𝐀𝐂𝐓𝐈𝐕𝐄
+│
+╰────────────────────╯
+
+      𓆩 ✦ 𓆪
+
+ 『 𝐒𝐈𝐆𝐌𝐀 𝐈𝐒 𝐀𝐋𝐈𝐕𝐄 』
+
+⌁  .menu
+⌁  .alive
+⌁  .ping
+
+╭───────────────╮
+│  ᴋᴜʀᴏx ᴅᴇᴠ × ᴍᴀɴɪ  │
+╰───────────────╯
+
+    ⟡ 𝐑𝐄𝐀𝐃𝐘 ⟡`;
+                const contextInfo = {
+                    forwardingScore: 1,
+                    isForwarded: true,
+                    forwardedNewsletterMessageInfo: {
+                        newsletterJid: '120363411061065067@newsletter',
+                        newsletterName: 'ꜱɪɢᴍᴀ xᴍᴅ',
+                        serverMessageId: -1
                     }
-                });
+                };
+                if (fs.existsSync(connectionVideoPath)) {
+                    await XeonBotInc.sendMessage(botNumber, {
+                        video: fs.readFileSync(connectionVideoPath),
+                        mimetype: 'video/mp4',
+                        fileName: 'sigma-connected.mp4',
+                        caption: connectionCaption,
+                        contextInfo
+                    });
+                } else {
+                    await XeonBotInc.sendMessage(botNumber, { text: connectionCaption, contextInfo });
+                }
             } catch (error) {
                 console.error('Error sending connection message:', error.message)
             }
