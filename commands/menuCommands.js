@@ -309,13 +309,20 @@ async function handleMenuCommand(sock, chatId, message, rawText) {
         const aiCommand = require('./ai');
         await aiCommand(sock, chatId, messageWithArgs); return true;
     }
-    if (['twitter', 'threads', 'pinterest', 'mediafire', 'mega'].includes(command)) {
-        try { await urlToolCommand(sock, chatId, message, command, args); }
-        catch (error) { await sock.sendMessage(chatId, { text: `❌ Download failed: ${error.message}` }, { quoted: message }); }
-        return true;
-    }
     if (command === 'add') { await addMemberCommand(sock, chatId, message, args); return true; }
     if (command === 'setbio') { await setBioCommand(sock, chatId, message, args); return true; }
+    if (['statusdl', 'statussave', 'statusreact', 'statusreply', 'statusmention', 'statusview'].includes(command)) {
+        const { statusToolCommand } = require('./statusTools');
+        await statusToolCommand(sock, chatId, message, rawText); return true;
+    }
+    if (['channel', 'channels', 'channelinfo', 'channelfollow', 'channelunfollow', 'channelmute', 'channelreact', 'channelpost'].includes(command)) {
+        const { channelCommand } = require('./channelTools');
+        await channelCommand(sock, chatId, message, rawText); return true;
+    }
+    if (['twitter', 'threads', 'pinterest', 'mediafire', 'mega'].includes(command)) {
+        const { socialDownloadCommand } = require('./socialDownload');
+        await socialDownloadCommand(sock, chatId, message); return true;
+    }
     if (command === 'restart' || command === 'shutdown') {
         await sock.sendMessage(chatId, { text: command === 'restart' ? '♻️ Restarting SIGMA XMD...' : '🛑 Shutting down SIGMA XMD...' }, { quoted: message });
         setTimeout(() => process.kill(process.pid, 'SIGTERM'), 500);
@@ -327,10 +334,9 @@ async function handleMenuCommand(sock, chatId, message, rawText) {
         else { const viewOnceCommand = require('./viewonce'); await viewOnceCommand(sock, chatId, message); }
         return true;
     }
-    if (['channel', 'channels', 'channelinfo', 'channelfollow', 'channelunfollow', 'channelmute', 'channelreact', 'channelpost'].includes(command)) { await channelCommand(sock, chatId, message, command); return true; }
     if (['profile', 'level', 'rank', 'leaderboard', 'daily', 'balance', 'give'].includes(command)) { await economyCommand(sock, chatId, message, command, args); return true; }
     if (['repo', 'github', 'git', 'script', 'sc', 'bug', 'logs', 'debug', 'source'].includes(command)) { await developerCommand(sock, chatId, message, command); return true; }
-    if (['rps', 'npm', 'short', 'forward', 'pin', 'unpin', 'exif', 'media', 'statusdl', 'statussave', 'statusreact', 'statusreply', 'statusmention', 'statusview', 'tagadmin', 'waifu', 'colorize', 'animefy', 'ttp', 'image', 'movie'].includes(command)) { await utilityCommand(sock, chatId, message, command, args); return true; }
+    if (['rps', 'npm', 'short', 'forward', 'pin', 'unpin', 'exif', 'media', 'tagadmin', 'waifu', 'colorize', 'animefy', 'ttp', 'image', 'movie'].includes(command)) { await utilityCommand(sock, chatId, message, command, args); return true; }
     return false;
 }
 
