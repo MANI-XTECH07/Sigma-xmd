@@ -1,0 +1,11 @@
+node_modules
+session
+session-backup-*
+.git
+.env
+*.log
+npm-debug.log*
+baileys_store.json
+baileys_store.json.bak
+tmp
+temp

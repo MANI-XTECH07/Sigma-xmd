@@ -1,0 +1,20 @@
+services:
+  sigma-xmd:
+    build: .
+    container_name: sigma-xmd
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      SESSION_DIR: /app/session
+      BAILEYS_LOG_LEVEL: warn
+    volumes:
+      - sigma_session:/app/session
+      - sigma_data:/app/data
+
+volumes:
+  sigma_session:
+  sigma_data:

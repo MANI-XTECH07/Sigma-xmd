@@ -99,6 +99,14 @@ If WhatsApp shows **“Waiting for this message. This may take a while.”** on 
 
 Set `SESSION_DIR` to the path where Baileys should store authentication state. The directory must survive process restarts and new releases. Heroku dynos have an ephemeral filesystem, so `./session` is deleted when a new dyno is created; this causes a new QR code and a new WhatsApp linked-device identity after every deployment. For a stable session, run SIGMA XMD on a VPS/Docker host with a mounted durable volume, or provide an external persistent auth store before using Heroku for production.
 
+The repository includes a persistent Docker deployment. On a VPS with Docker installed, run:
+
+```bash
+docker compose up -d --build
+```
+
+The `sigma_session` volume stores the Baileys credentials outside the container, so ordinary restarts and image updates do not create a new WhatsApp device. Pair once at `http://your-server:3000`; do not run multiple bot containers against the same WhatsApp account.
+
 🚀 4️⃣ Deploy SIGMA XMD
 
 You can deploy SIGMA XMD on a supported Node.js hosting platform, VPS or your own server.
