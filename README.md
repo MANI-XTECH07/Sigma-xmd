@@ -91,7 +91,7 @@ SIGMA XMD now includes a built-in pairing portal served by the bot itself. Start
 
 Set these optional environment variables before starting: `PORT`, `HOST`, and `PAIRING_SITE_URL`. The `.pair` command sends users to the configured public pairing URL. The phone number is validated in the browser and is not persisted by the portal.
 
-The pairing endpoint is rate-limited and uses the local Baileys socket; it no longer depends on the old third-party pair-code service.
+The pairing endpoint is rate-limited and uses the local Baileys socket. The QR endpoint refreshes automatically while WhatsApp is connecting. Set `BAILEYS_LOG_LEVEL=info` or `debug` when diagnosing connection issues.
 
 🚀 4️⃣ Deploy SIGMA XMD
 

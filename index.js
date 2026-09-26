@@ -100,7 +100,7 @@ async function startXeonBotInc() {
 
         const XeonBotInc = makeWASocket({
             version,
-            logger: pino({ level: 'silent' }),
+            logger: pino({ level: process.env.BAILEYS_LOG_LEVEL || 'warn' }),
             browser: ["Ubuntu", "Chrome", "20.0.04"],
             auth: {
                 creds: state.creds,
@@ -254,7 +254,8 @@ async function startXeonBotInc() {
         if (qr) {
             // Baileys emits QR while the socket is ready for requestPairingCode.
             pairing.markSocketReady(XeonBotInc)
-            console.log(chalk.yellow('📱 QR Code generated. Please scan with WhatsApp or use the pairing website.'))
+            await pairing.updateQr(XeonBotInc, qr)
+            console.log(chalk.yellow('📱 QR code updated. Open the pairing website and scan it.'))
         }
         
         if (connection === 'connecting') {
@@ -263,6 +264,7 @@ async function startXeonBotInc() {
         
         if (connection == "open") {
             pairing.markSocketReady(XeonBotInc)
+            pairing.clearQr(XeonBotInc)
             console.log(chalk.magenta(` `))
             console.log(chalk.yellow(`🌿Connected to => ` + JSON.stringify(XeonBotInc.user, null, 2)))
 
@@ -300,7 +302,8 @@ async function startXeonBotInc() {
             const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut
             const statusCode = lastDisconnect?.error?.output?.statusCode
             
-            console.log(chalk.red(`Connection closed due to ${lastDisconnect?.error}, reconnecting ${shouldReconnect}`))
+            const disconnectMessage = lastDisconnect?.error?.message || String(lastDisconnect?.error || 'unknown reason')
+            console.log(chalk.red(`Connection closed: ${disconnectMessage}; reconnecting=${shouldReconnect}`))
             
             if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
                 try {
@@ -395,11 +398,10 @@ startXeonBotInc().catch(error => {
     process.exit(1)
 })
 process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err)
+    console.error('Uncaught Exception:', err?.stack || err)
 })
-
 process.on('unhandledRejection', (err) => {
-    console.error('Unhandled Rejection:', err)
+    console.error('Unhandled Rejection:', err?.stack || err)
 })
 
 let file = require.resolve(__filename)
