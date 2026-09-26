@@ -19,9 +19,9 @@ async function clearSessionCommand(sock, chatId, msg) {
     try {
         const senderId = msg.key.participant || msg.key.remoteJid;
         const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
-        
+
         if (!msg.key.fromMe && !isOwner) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: '❌ This command can only be used by the owner!',
                 ...channelInfo
             });
@@ -29,10 +29,10 @@ async function clearSessionCommand(sock, chatId, msg) {
         }
 
         // Define session directory
-        const sessionDir = path.join(__dirname, '../session');
+        const sessionDir = process.env.SESSION_DIR || path.join(__dirname, '../session');
 
         if (!fs.existsSync(sessionDir)) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: '❌ Session directory not found!',
                 ...channelInfo
             });
@@ -44,13 +44,13 @@ async function clearSessionCommand(sock, chatId, msg) {
         let errorDetails = [];
 
         // Send initial status
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
             text: `🔍 Optimizing session files for better performance...`,
             ...channelInfo
         });
 
         const files = fs.readdirSync(sessionDir);
-        
+
         // Count files by type for optimization
         let appStateSyncCount = 0;
         let preKeyCount = 0;
@@ -84,18 +84,18 @@ async function clearSessionCommand(sock, chatId, msg) {
                        `• Pre-key files: ${preKeyCount}\n` +
                        (errors > 0 ? `\n⚠️ Errors encountered: ${errors}\n${errorDetails.join('\n')}` : '');
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
             text: message,
             ...channelInfo
         });
 
     } catch (error) {
         console.error('Error in clearsession command:', error);
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
             text: '❌ Failed to clear session files!',
             ...channelInfo
         });
     }
 }
 
-module.exports = clearSessionCommand; 
+module.exports = clearSessionCommand;

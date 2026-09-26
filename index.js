@@ -49,8 +49,8 @@ const { join } = require('path')
 const store = require('./lib/lightweight_store')
 const pairing = require('./lib/pairing')
 const { startWebServer } = require('./lib/web')
-
 const connectionVideoPath = path.join(__dirname, 'assets', 'sigma-connected.mp4')
+const sessionDir = process.env.SESSION_DIR || path.join(__dirname, 'session')
 
 // Initialize store
 store.readFromFile()
@@ -97,7 +97,7 @@ const question = (text) => {
 async function startXeonBotInc() {
     try {
         let { version, isLatest } = await fetchLatestBaileysVersion()
-        const { state, saveCreds } = await useMultiFileAuthState(`./session`)
+        const { state, saveCreds } = await useMultiFileAuthState(sessionDir)
         const msgRetryCounterCache = new NodeCache()
         const shouldIgnoreJid = (jid) => {
             // Status broadcasts can contain self-sent messages addressed to
@@ -376,7 +376,7 @@ async function startXeonBotInc() {
             
             if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
                 try {
-                    rmSync('./session', { recursive: true, force: true })
+                    rmSync(sessionDir, { recursive: true, force: true })
                     console.log(chalk.yellow('Session folder deleted. Please re-authenticate.'))
                 } catch (error) {
                     console.error('Error deleting session:', error)

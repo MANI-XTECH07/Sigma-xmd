@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const sessionDir = path.join(process.cwd(), 'session');
+const sessionDir = process.env.SESSION_DIR || path.join(process.cwd(), 'session');
 const storeFile = path.join(process.cwd(), 'baileys_store.json');
 const backupDir = path.join(process.cwd(), 'session-backup-' + new Date().toISOString().replace(/[:.]/g, '-'));
 
