@@ -1,5 +1,6 @@
 const axios = require('axios');
 const yts = require('yt-search');
+const { messages } = require('../lib/messageConfig');
 
 const AXIOS_DEFAULTS = {
     timeout: 60000,
@@ -97,7 +98,10 @@ async function videoCommand(sock, chatId, message) {
             if (thumb) {
                 await sock.sendMessage(chatId, {
                     image: { url: thumb },
-                    caption: `*${captionTitle}*\nDownloading...`
+                    caption: messages.ytmp4({
+                        title: captionTitle,
+                        quality: 'Best available'
+                    })
                 }, { quoted: message });
             }
         } catch (e) { console.error('[VIDEO] thumb error:', e?.message || e); }
@@ -146,12 +150,25 @@ async function videoCommand(sock, chatId, message) {
             throw new Error('All download sources failed. The content may be unavailable or blocked in your region.');
         }
 
+        const mediaTitle = videoData.title || videoTitle || searchQuery;
+        await sock.sendMessage(chatId, {
+            text: messages.downloadSuccess({
+                title: mediaTitle,
+                artist: 'YouTube',
+                quality: 'MP4',
+                filesize: 'Unknown'
+            })
+        }, { quoted: message });
+        await sock.sendMessage(chatId, {
+            text: messages.sending({ title: mediaTitle, filesize: 'Unknown' })
+        }, { quoted: message });
+
         // Send video directly using the download URL
         await sock.sendMessage(chatId, {
             video: { url: videoData.download || videoData.dl || videoData.url },
             mimetype: 'video/mp4',
-            fileName: `${(videoData.title || videoTitle || 'video').replace(/[^\w\s-]/g, '')}.mp4`,
-            caption: `*${videoData.title || videoTitle || 'Video'}*\n\n> *_Downloaded by Knight Bot MD_*`
+            fileName: `${mediaTitle.replace(/[^\w\s-]/g, '')}.mp4`,
+            caption: `> ⚡ SIGMA XMD\n\n🎬 *${mediaTitle}*`
         }, { quoted: message });
 
 
@@ -170,8 +187,11 @@ async function videoCommand(sock, chatId, message) {
             errorMessage = '❌ Download failed: ' + error.message;
         }
         
-        await sock.sendMessage(chatId, { 
-            text: errorMessage 
+        await sock.sendMessage(chatId, {
+            text: messages.commandError({
+                title: searchQuery || 'Video download',
+                error: errorMessage.replace(/^❌\s*/, '')
+            })
         }, { quoted: message });
     }
 }

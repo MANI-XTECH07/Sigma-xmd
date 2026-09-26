@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { toAudio } = require('../lib/converter');
 const ytdl = require('ytdl-core');
+const { messages } = require('../lib/messageConfig');
 
 const AXIOS_DEFAULTS = {
 	timeout: 60000,
@@ -105,7 +106,18 @@ async function songCommand(sock, chatId, message) {
         // Inform user
         await sock.sendMessage(chatId, {
             image: { url: video.thumbnail },
-            caption: `🎵 Downloading: *${video.title}*\n⏱ Duration: ${video.timestamp}`
+            caption: messages.songFound({
+                title: video.title || text,
+                artist: video.author?.name || 'Unknown artist',
+                duration: video.timestamp || 'Unknown'
+            })
+        }, { quoted: message });
+
+        await sock.sendMessage(chatId, {
+            text: messages.ytmp3({
+                title: video.title || text,
+                quality: 'Best available'
+            })
         }, { quoted: message });
 
 		// Try multiple APIs with fallback chain: EliteProTech -> Yupra -> Okatsu
@@ -279,7 +291,7 @@ async function songCommand(sock, chatId, message) {
 		let finalMimetype = 'audio/mpeg';
 		let finalExtension = 'mp3';
 
-		if (fileExtension !== 'mp3') {
+			if (fileExtension !== 'mp3') {
 			try {
 				finalBuffer = await toAudio(audioBuffer, fileExtension);
 				if (!finalBuffer || finalBuffer.length === 0) {
@@ -290,13 +302,27 @@ async function songCommand(sock, chatId, message) {
 			} catch (convErr) {
 				throw new Error(`Failed to convert ${detectedFormat} to MP3: ${convErr.message}`);
 			}
-		}
+			}
 
-		// Send buffer as MP3
-		await sock.sendMessage(chatId, {
-			audio: finalBuffer,
-			mimetype: finalMimetype,
-			fileName: `${(audioData.title || video.title || 'song').replace(/[^\w\s-]/g, '')}.${finalExtension}`,
+			const mediaTitle = audioData.title || video.title || 'song';
+			const filesize = `${(finalBuffer.length / (1024 * 1024)).toFixed(2)} MB`;
+			await sock.sendMessage(chatId, {
+				text: messages.downloadSuccess({
+					title: mediaTitle,
+					artist: video.author?.name || 'Unknown artist',
+					quality: 'MP3',
+					filesize
+				})
+			}, { quoted: message });
+			await sock.sendMessage(chatId, {
+				text: messages.sending({ title: mediaTitle, filesize })
+			}, { quoted: message });
+
+			// Send buffer as MP3
+			await sock.sendMessage(chatId, {
+				audio: finalBuffer,
+				mimetype: finalMimetype,
+				fileName: `${mediaTitle.replace(/[^\w\s-]/g, '')}.${finalExtension}`,
 			ptt: false
 		}, { quoted: message });
 
@@ -339,9 +365,12 @@ async function songCommand(sock, chatId, message) {
             errorMessage = '❌ All download sources failed. The content may be unavailable or blocked.';
         }
         
-        await sock.sendMessage(chatId, { 
-            text: errorMessage 
-        }, { quoted: message });
+		await sock.sendMessage(chatId, {
+			text: messages.commandError({
+				title: text || 'Song download',
+				error: errorMessage.replace(/^❌\s*/, '')
+			})
+		}, { quoted: message });
     }
 }
 
