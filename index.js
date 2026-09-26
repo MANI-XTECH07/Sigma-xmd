@@ -99,6 +99,11 @@ async function startXeonBotInc() {
         let { version, isLatest } = await fetchLatestBaileysVersion()
         const { state, saveCreds } = await useMultiFileAuthState(`./session`)
         const msgRetryCounterCache = new NodeCache()
+        const isOwnLidJid = (jid) => {
+            const ownLid = state.creds?.me?.lid
+            if (!ownLid || !jid || !String(jid).includes('@lid')) return false
+            return String(jid).split(':')[0].split('@')[0] === String(ownLid).split(':')[0].split('@')[0]
+        }
 
         const XeonBotInc = makeWASocket({
             version,
@@ -109,6 +114,14 @@ async function startXeonBotInc() {
                 keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
             },
             markOnlineOnConnect: true,
+            // The boot announcement is sent to the bot's own chat. Do not
+            // re-emit it as a second local event; this avoids duplicate
+            // self-device protocol messages on WhatsApp's LID session.
+            emitOwnEvents: false,
+            // Baileys can receive a peer copy addressed to the bot's own LID
+            // after a self-send. Ignoring only that LID prevents the known
+            // Bad MAC/session-retry loop without blocking normal commands.
+            shouldIgnoreJid: isOwnLidJid,
             generateHighQualityLinkPreview: true,
             syncFullHistory: false,
             getMessage: async (key) => {
