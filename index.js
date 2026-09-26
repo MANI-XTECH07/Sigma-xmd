@@ -131,8 +131,10 @@ async function startXeonBotInc() {
     // Message handling
     XeonBotInc.ev.on('messages.upsert', async chatUpdate => {
         try {
-            const mek = chatUpdate.messages[0]
-            if (!mek.message) return
+            const mek = chatUpdate?.messages?.[0]
+            if (!mek?.message) return
+            const messageType = Object.keys(mek.message)[0] || 'unknown'
+            console.log(`[messages] received type=${chatUpdate.type || 'unknown'} jid=${mek.key?.remoteJid || 'unknown'} content=${messageType}`)
             mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
             if (mek.key && mek.key.remoteJid === 'status@broadcast') {
                 await handleStatus(XeonBotInc, chatUpdate);
@@ -145,7 +147,7 @@ async function startXeonBotInc() {
                 const isGroup = mek.key?.remoteJid?.endsWith('@g.us')
                 if (!isGroup) return // Block DMs in private mode, but allow group messages
             }
-            if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
+            if (mek.key?.id?.startsWith('BAE5') && mek.key.id.length === 16) return
 
             try {
                 await handleMessages(XeonBotInc, chatUpdate, true)

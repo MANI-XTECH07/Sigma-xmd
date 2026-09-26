@@ -164,12 +164,17 @@ const channelInfo = {
 };
 
 async function handleMessages(sock, messageUpdate, printLog) {
+    let chatId = null;
+    let messageId = null;
     try {
         const { messages, type } = messageUpdate;
-        if (type !== 'notify') return;
-
+        // Baileys uses notify for live messages. Accept an omitted type too,
+        // because some wrappers omit it when forwarding the event.
+        if (type && type !== 'notify') return;
         const message = messages[0];
         if (!message?.message) return;
+        chatId = message.key?.remoteJid || null;
+        messageId = message.key?.id || null;
 
         // Handle autoread functionality
         await handleAutoread(sock, message);
@@ -185,7 +190,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
             return;
         }
 
-        const chatId = message.key.remoteJid;
+        chatId = message.key.remoteJid;
         const senderId = message.key.participant || message.key.remoteJid;
         const isGroup = chatId.endsWith('@g.us');
         const senderIsSudo = await isSudo(senderId);
@@ -1209,13 +1214,13 @@ async function handleMessages(sock, messageUpdate, printLog) {
             await addCommandReaction(sock, message);
         }
     } catch (error) {
-        console.error('❌ Error in message handler:', error.message);
+        console.error(`❌ Error in message handler [${chatId || 'unknown'}:${messageId || 'unknown'}]:`, error?.stack || error);
         // Only try to send error message if we have a valid chatId
         if (chatId) {
             await sock.sendMessage(chatId, {
                 text: '❌ Failed to process command!',
                 ...channelInfo
-            });
+            }).catch((sendError) => console.error('❌ Failed to send handler error:', sendError?.stack || sendError));
         }
     }
 }
