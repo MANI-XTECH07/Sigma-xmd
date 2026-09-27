@@ -289,6 +289,7 @@ async function startXeonBotInc() {
         }
         
         if (connection == "open") {
+            if (activeSocket !== XeonBotInc) return
             pairing.markSocketReady(XeonBotInc)
             pairing.clearQr(XeonBotInc)
             console.log(chalk.magenta(` `))
@@ -364,6 +365,7 @@ async function startXeonBotInc() {
             }
 
             await delay(1999)
+            if (activeSocket !== XeonBotInc) return
             console.log(chalk.yellow(`\n\n                  ${chalk.bold.blue(`[ ${global.botname || 'ꜱɪɢᴍᴀ xᴍᴅ'} ]`)}\n\n`))
             console.log(chalk.cyan(`< ================================================== >`))
             console.log(chalk.magenta(`\n${global.themeemoji || '•'} YT CHANNEL: ᴍᴀɴɪ xᴛᴇᴄʜ`))
