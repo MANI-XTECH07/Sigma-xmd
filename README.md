@@ -107,6 +107,8 @@ docker compose up -d --build
 
 The `sigma_session` volume stores the Baileys credentials outside the container, so ordinary restarts and image updates do not create a new WhatsApp device. Pair once at `http://your-server:3000`; do not run multiple bot containers against the same WhatsApp account.
 
+For safer reconnects, `SEND_CONNECTION_MESSAGE` defaults to `false`; this avoids sending a boot video to the bot's own WhatsApp chat on every reconnect. The connection handler also prevents overlapping sockets and duplicate reconnect timers.
+
 🚀 4️⃣ Deploy SIGMA XMD
 
 You can deploy SIGMA XMD on a supported Node.js hosting platform, VPS or your own server.

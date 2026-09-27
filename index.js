@@ -51,6 +51,9 @@ const pairing = require('./lib/pairing')
 const { startWebServer } = require('./lib/web')
 const connectionVideoPath = path.join(__dirname, 'assets', 'sigma-connected.mp4')
 const sessionDir = process.env.SESSION_DIR || path.join(__dirname, 'session')
+let activeSocket = null
+let startInFlight = false
+let reconnectTimer = null
 
 // Initialize store
 store.readFromFile()
@@ -95,6 +98,8 @@ const question = (text) => {
 
 
 async function startXeonBotInc() {
+    if (startInFlight || activeSocket) return activeSocket
+    startInFlight = true
     try {
         let { version, isLatest } = await fetchLatestBaileysVersion()
         const { state, saveCreds } = await useMultiFileAuthState(sessionDir)
@@ -140,6 +145,9 @@ async function startXeonBotInc() {
             connectTimeoutMs: 60000,
             keepAliveIntervalMs: 10000,
         })
+
+        startInFlight = false
+        activeSocket = XeonBotInc
 
         // Save credentials when they update
         XeonBotInc.ev.on('creds.update', saveCreds)
@@ -286,7 +294,7 @@ async function startXeonBotInc() {
             console.log(chalk.magenta(` `))
             console.log(chalk.yellow(`🌿Connected to => ` + JSON.stringify(XeonBotInc.user, null, 2)))
 
-            try {
+            if (process.env.SEND_CONNECTION_MESSAGE === 'true') try {
                 const botNumber = XeonBotInc.user.id.split(':')[0] + '@s.whatsapp.net';
                 const connectionCaption = `╭━━━〔 𓆩⚡𓆪 〕━━━╮
 𝐒𝐈𝐆𝐌𝐀  𝐗𝐌𝐃
@@ -367,6 +375,8 @@ async function startXeonBotInc() {
         }
         
         if (connection === 'close') {
+            if (activeSocket && activeSocket !== XeonBotInc) return
+            activeSocket = null
             pairing.clearSocket(XeonBotInc)
             const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut
             const statusCode = lastDisconnect?.error?.output?.statusCode
@@ -385,9 +395,13 @@ async function startXeonBotInc() {
             }
             
             if (shouldReconnect) {
-                console.log(chalk.yellow('Reconnecting...'))
-                await delay(5000)
-                startXeonBotInc()
+                if (!reconnectTimer) {
+                    console.log(chalk.yellow('Reconnecting...'))
+                    reconnectTimer = setTimeout(() => {
+                        reconnectTimer = null
+                        startXeonBotInc().catch(error => console.error('Reconnect failed:', error))
+                    }, 5000)
+                }
             }
         }
     })
@@ -451,9 +465,14 @@ async function startXeonBotInc() {
 
     return XeonBotInc
     } catch (error) {
+        startInFlight = false
         console.error('Error in startXeonBotInc:', error)
-        await delay(5000)
-        startXeonBotInc()
+        if (!reconnectTimer) {
+            reconnectTimer = setTimeout(() => {
+                reconnectTimer = null
+                startXeonBotInc().catch(retryError => console.error('Retry failed:', retryError))
+            }, 5000)
+        }
     }
 }
 
